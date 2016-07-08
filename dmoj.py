@@ -23,11 +23,6 @@ extensions = {
     "TUR": "t",
 }
 
-# The request.Session used to fetch data
-session = None
-# DMOJ credentials
-username, password = None, None
-
 def login(username, password):
     print("Attempting login...")
     session = requests.Session()
@@ -51,8 +46,7 @@ def login(username, password):
     return (session, response.text.find("login") == -1)
 
 # Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
-def extract_src(file_name, submission_num):
-    global session
+def extract_src(session, file_name, submission_num):
     # Gets the HTML page for the submission page
     response = session.get("https://dmoj.ca/src/" + submission_num)
     html_parser = bs4.BeautifulSoup(response.text, "html.parser")
@@ -73,8 +67,6 @@ def extract_src(file_name, submission_num):
 
 def main():
 
-    global session, username, password
-
     print()
     print("Nathan Lo's DMOJ working directory manager")
     print("==========================================")
@@ -93,8 +85,6 @@ def main():
         print("Login unsuccessful... ")
         username = input(" -> Username: ")
         password = getpass.getpass(" -> Password: ")
-        with open(".dmoj_creds", "w") as f:
-            f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
         session, login_succesful = login(username, password)
 
     print("Login successful!")
@@ -140,7 +130,7 @@ def main():
     c = 0
     for done_problem in done:
         if done_problem not in submission_nums:
-            print("\t {}".format(done_problem))
+            print("\t{}".format(done_problem))
             os.rename("done/" + done_problem, "working/" + done_problem)
             c += 1
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
@@ -152,7 +142,7 @@ def main():
     c = 0
     for working_problem in working:
         if working_problem in submission_nums:
-            print("\t {}".format(working_problem))
+            print("\t{}".format(working_problem))
             os.rename("working/" + working_problem, "done/" + working_problem)
             c += 1
     print(" -> {} files moved from 'working/' to 'done/'".format(c))
@@ -163,9 +153,9 @@ def main():
     print("=======================================================================")
     for ac_problem in submission_nums:
         if ac_problem not in done:
-            file_name = "done/" +  ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
+            file_name = "done/" + ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
             submission_num = submission_nums[ac_problem]
-            extract_src(file_name, submission_nums[ac_problem])
+            extract_src(session, file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
 
     # Closes the session
