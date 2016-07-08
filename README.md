@@ -20,3 +20,10 @@ in a decodable format. As such, simply edit the code in `dmoj.py` if you do not 
 
 **Known problems**:
 - Not all source languages are supported (extension mappings are not complete)
+- The script does not check if your credentials are valid
+
+**TODO**:
+- Add source languages
+- Check valid credentials
+- Make option to not write file
+- Check existence of 'done' and 'working' directories and create them automatically
