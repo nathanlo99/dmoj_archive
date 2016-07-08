@@ -100,49 +100,32 @@ def main():
     sub_info = {}
     submission_nums = {}
 
-    # Gets the fastest AC submission with the most points and notes the submission number and source language
+    # Gets the fastest AC submission with the most points and notes the submission number and
+    # source language
     for submission_num, data in subs.items():
         if data["result"] != "AC": continue
+        info = {
+            "num": submission_num,
+            "lang": data["language"],
+            "time": data["time"],
+            "points": data["points"],
+        }
         if data["problem"] not in sub_info:
-            sub_info[data["problem"]] = {
-                "num": submission_num,
-                "lang": data["language"],
-                "time": data["time"],
-                "points": data["points"],
-            }
+            sub_info[data["problem"]] = info
             submission_nums[data["problem"]] = submission_num
-            continue
-        current_info = sub_info[data["problem"]]
-        current_points = current_info["points"]
-        current_time = current_info["time"]
-        if data["points"] > current_points:
-            sub_info[data["problem"]] = {
-                "num": submission_num,
-                "lang": data["language"],
-                "time": data["time"],
-                "points": data["points"],
-            }
-            submission_nums[data["problem"]] = submission_num
-            continue
-        if data["points"] == current_points and data["time"] < current_time:
-            sub_info[data["problem"]] = {
-                "num": submission_num,
-                "lang": data["language"],
-                "time": data["time"],
-                "points": data["points"],
-            }
-            submission_nums[data["problem"]] = submission_num
-            continue
-
-
-    completed_problems = list(submission_nums.keys())
-
+        else:
+            current_info = sub_info[data["problem"]]
+            if (data["points"] > current_info["points"] or
+               (data["points"] == current_info["points"] and data["time"] < current_info["time"])):
+                sub_info[data["problem"]] = info
+                submission_nums[data["problem"]] = submission_num
+                
     # If something is in 'done' but not AC'ed, move those files to 'working'
     print("The following problems were marked done while not AC'ed on DMOJ:")
     print("================================================================")
     c = 0
     for done_problem in done:
-        if done_problem not in completed_problems:
+        if done_problem not in submission_nums:
             print("\t {}".format(done_problem))
             os.rename("done/" + done_problem, "working/" + done_problem)
             c += 1
@@ -154,7 +137,7 @@ def main():
     print("===================================================================")
     c = 0
     for working_problem in working:
-        if working_problem in completed_problems:
+        if working_problem in submission_nums:
             print("\t {}".format(working_problem))
             os.rename("working/" + working_problem, "done/" + working_problem)
             c += 1
@@ -164,7 +147,7 @@ def main():
     # Extracts AC problem sources that were not found in 'done'
     print("The following problems were AC'ed but the source was not found locally:")
     print("=======================================================================")
-    for ac_problem in completed_problems:
+    for ac_problem in submission_nums:
         if ac_problem not in done:
             file_name = "done/" +  ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
             submission_num = submission_nums[ac_problem]
