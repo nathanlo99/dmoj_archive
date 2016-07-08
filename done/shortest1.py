@@ -1,2 +1,1 @@
-while(True):
-    pass
+while 1:1

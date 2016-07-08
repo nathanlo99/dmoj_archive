@@ -79,8 +79,7 @@ def main():
     # Get credentials, either from cache or from user
     if input("Use cached creds?  ") in ["y", "Y"] and os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
-            username, password =
-                base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
+            username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
     else:
         username = input("Username: ")
         password = getpass.getpass("Password: ")
@@ -101,16 +100,40 @@ def main():
     sub_info = {}
     submission_nums = {}
 
-    # Gets the fastest AC submission and notes the submission number and source language
+    # Gets the fastest AC submission with the most points and notes the submission number and source language
     for submission_num, data in subs.items():
         if data["result"] != "AC": continue
-        if data["problem"] not in sub_info or data["time"] < sub_info[data["problem"]]["time"]:
+        if data["problem"] not in sub_info:
             sub_info[data["problem"]] = {
                 "num": submission_num,
                 "lang": data["language"],
                 "time": data["time"],
+                "points": data["points"],
             }
             submission_nums[data["problem"]] = submission_num
+            continue
+        current_info = sub_info[data["problem"]]
+        current_points = current_info["points"]
+        current_time = current_info["time"]
+        if data["points"] > current_points:
+            sub_info[data["problem"]] = {
+                "num": submission_num,
+                "lang": data["language"],
+                "time": data["time"],
+                "points": data["points"],
+            }
+            submission_nums[data["problem"]] = submission_num
+            continue
+        if data["points"] == current_points and data["time"] < current_time:
+            sub_info[data["problem"]] = {
+                "num": submission_num,
+                "lang": data["language"],
+                "time": data["time"],
+                "points": data["points"],
+            }
+            submission_nums[data["problem"]] = submission_num
+            continue
+
 
     completed_problems = list(submission_nums.keys())
 
@@ -121,7 +144,7 @@ def main():
     for done_problem in done:
         if done_problem not in completed_problems:
             print("\t {}".format(done_problem))
-            os.rename(join("done", done_problem), join("working", done_problem))
+            os.rename("done/" + done_problem, "working/" + done_problem)
             c += 1
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
     print()
@@ -133,7 +156,7 @@ def main():
     for working_problem in working:
         if working_problem in completed_problems:
             print("\t {}".format(working_problem))
-            os.rename(join("working", working_problem), join("done", working_problem))
+            os.rename("working/" + working_problem, "done/" + working_problem)
             c += 1
     print(" -> {} files moved from 'working/' to 'done/'".format(c))
     print()
@@ -143,7 +166,7 @@ def main():
     print("=======================================================================")
     for ac_problem in completed_problems:
         if ac_problem not in done:
-            file_name = join("done", ac_problem) + "." + extensions[sub_info[ac_problem]["lang"]]
+            file_name = "done/" +  ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
             submission_num = submission_nums[ac_problem]
             extract_src(file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
