@@ -72,10 +72,12 @@ def main():
     print("==========================================")
     print()
 
+    used_cache = False
     # Get credentials, either from cache or from user
     if input("Use cached creds?  ") in ["y", "Y"] and os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
             username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
+            used_cache = True
     else:
         username = input(" -> Username: ")
         password = getpass.getpass(" -> Password: ")
@@ -88,7 +90,8 @@ def main():
         session, login_succesful = login(username, password)
 
     print("Login successful!")
-    if input("Write '.dmoj_creds' file? [Yy/Nn]: ") in ["Y", "y"]:
+
+    if not used_cache and input("Write '.dmoj_creds' file? [Yy/Nn]: ") in ["Y", "y"]:
         with open(".dmoj_creds", "w") as f:
             f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
 
@@ -125,6 +128,7 @@ def main():
                 submission_nums[data["problem"]] = submission_num
 
     # If something is in 'done' but not AC'ed, move those files to 'working'
+    print()
     print("The following problems were marked done while not AC'ed on DMOJ:")
     print("================================================================")
     c = 0
@@ -151,16 +155,19 @@ def main():
     # Extracts AC problem sources that were not found in 'done'
     print("The following problems were AC'ed but the source was not found locally:")
     print("=======================================================================")
+    c = 0
     for ac_problem in submission_nums:
         if ac_problem not in done:
             file_name = "done/" + ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
             submission_num = submission_nums[ac_problem]
             extract_src(session, file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
+            c += 1
+    print(" -> {} files written".format(c))
+    print()
 
     # Closes the session
-    if session is not None:
-        session.close()
+    session.close()
 
 if __name__ == "__main__":
     main()
