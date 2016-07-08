@@ -28,27 +28,31 @@ session = None
 # DMOJ credentials
 username, password = None, None
 
+def login(username, password):
+    print("Attempting login...")
+    session = requests.Session()
+    # Fetches the csrftoken from dmoj.ca
+    session.get("https://dmoj.ca")
+    payload = {
+        "username": username,
+        "password": password,
+        "csrfmiddlewaretoken": session.cookies["csrftoken"],
+    }
+    headers = {
+        "Referer": "https://dmoj.ca/",
+        "Upgrade-Insecure-Requests": "1",
+    }
+    session.headers.update(headers)
+    # Logs in with the session
+    session.post("https://dmoj.ca/accounts/login/?next=/", data=payload)
+    response = session.get("https://dmoj.ca/edit/profile/")
+    # If the HTML returned contains the word "login", DMOJ probably redirected us to the login page
+    # Therefore, login was unsucessful
+    return (session, response.text.find("login") == -1)
+
 # Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
 def extract_src(file_name, submission_num):
-    global session, username, password
-    # If the session has not yet been initialized, log into DMOJ
-    if session is None:
-        session = requests.Session()
-        # Fetches the csrftoken from dmoj.ca
-        session.get("https://dmoj.ca")
-        payload = {
-            "username": username,
-            "password": password,
-            "csrfmiddlewaretoken": session.cookies["csrftoken"],
-        }
-        headers = {
-            "Referer": "https://dmoj.ca/",
-            "Upgrade-Insecure-Requests": "1",
-        }
-        session.headers.update(headers)
-        # Logs in with the session
-        session.post("https://dmoj.ca/accounts/login/?next=/", data=payload)
-
+    global session
     # Gets the HTML page for the submission page
     response = session.get("https://dmoj.ca/src/" + submission_num)
     html_parser = bs4.BeautifulSoup(response.text, "html.parser")
@@ -81,12 +85,22 @@ def main():
         with open(".dmoj_creds", "r") as f:
             username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
     else:
-        username = input("Username: ")
-        password = getpass.getpass("Password: ")
+        username = input(" -> Username: ")
+        password = getpass.getpass(" -> Password: ")
+
+    session, login_successful = login(username, password)
+    while not login_successful:
+        print("Login unsuccessful... ")
+        username = input(" -> Username: ")
+        password = getpass.getpass(" -> Password: ")
         with open(".dmoj_creds", "w") as f:
             f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
+        session, login_succesful = login(username, password)
 
-    # TODO: Check if credentials are valid
+    print("Login successful!")
+    if input("Write '.dmoj_creds' file? [Yy/Nn]: ") in ["Y", "y"]:
+        with open(".dmoj_creds", "w") as f:
+            f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
 
     # raw_name("source_file_name.extension") => "source_file_name"
     raw_name = lambda extended: ".".join(extended.split(".")[:-1])
@@ -119,7 +133,7 @@ def main():
                (data["points"] == current_info["points"] and data["time"] < current_info["time"])):
                 sub_info[data["problem"]] = info
                 submission_nums[data["problem"]] = submission_num
-                
+
     # If something is in 'done' but not AC'ed, move those files to 'working'
     print("The following problems were marked done while not AC'ed on DMOJ:")
     print("================================================================")
