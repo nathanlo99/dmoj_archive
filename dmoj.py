@@ -1,11 +1,13 @@
 #! /usr/local/bin/pypy3
-import requests
-import getpass
-import base64
-import bs4
-import os
-import os.path
+import requests    # The base module for GET and POST requests
+import getpass     # Gets the password securely
+import base64      # To 'encode' the DMOJ credentials
+import bs4         # To inspect the HTML files sent back by DMOJ
+import os          # To inspect the file system
+import os.path     # For 'isfile' and 'join' methods
 
+# The extensions for each source langauge, used when extracting the source into a file
+# INCOMPLETE
 extensions = {
     "PYPY3": "py",
     "PYPY": "py",
@@ -21,15 +23,20 @@ extensions = {
     "TUR": "t",
 }
 
+# The request.Session used to fetch data
 session = None
+# DMOJ credentials
 username, password = None, None
 
+# Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
 def extract_src(file_name, submission_num):
     global session, username, password
+    # If the session has not yet been initialized, log into DMOJ
     if session is None:
         session = requests.Session()
+        # Fetches the csrftoken from dmoj.ca
         session.get("https://dmoj.ca")
-        data = {
+        payload = {
             "username": username,
             "password": password,
             "csrfmiddlewaretoken": session.cookies["csrftoken"],
@@ -39,16 +46,23 @@ def extract_src(file_name, submission_num):
             "Upgrade-Insecure-Requests": "1",
         }
         session.headers.update(headers)
-        r = session.post("https://dmoj.ca/accounts/login/?next=/", data=data)
+        # Logs in with the session
+        session.post("https://dmoj.ca/accounts/login/?next=/", data=payload)
+
+    # Gets the HTML page for the submission page
     response = session.get("https://dmoj.ca/src/" + submission_num)
     html_parser = bs4.BeautifulSoup(response.text, "html.parser")
+    # Modern DMOJ places the source code into a <code> ... </code> block
     code_element = html_parser.find("code")
+    # Older DMOJ uses <td class=source-code> ... </td>
     if code_element is None:
         code_element = html_parser.find("td", "source-code")
+    # TODO: There may be other DMOJ formats that are not yet supported
     if code_element is None:
         print("WARNING: No code found for submission {}, dumping HTML".format(submission_num))
         print(response.text)
         return
+    # Writes the code into the file
     raw_code = code_element.get_text()
     with open(file_name, "w") as f:
         f.write(raw_code)
