@@ -73,6 +73,26 @@ def main():
     print()
 
     used_cache = False
+    # raw_name("source_file_name.extension") => "source_file_name"
+    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
+
+    # Gets the raw file_names of all the files in 'done' and 'working' directories
+    if os.path.isdir("done"):
+        done_files = [f for f in os.listdir("done") if os.path.isfile("done/" + f)]
+        done = [raw_name(f) for f in done_files]
+    else:
+        os.mkdir("done")
+        done_files = []
+        done = []
+    if os.path.isdir("working"):
+        working_files = [f for f in os.listdir("working") if os.path.isfile("working/" + f)]
+        working = [raw_name(f) for f in working_files]
+    else:
+        os.mkdir("working")
+        working_files = []
+        working = []
+
+    used_cache = False
     # Get credentials, either from cache or from user
     if input("Use cached creds?  ") in ["y", "Y"] and os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
@@ -94,13 +114,6 @@ def main():
     if not used_cache and input("Write '.dmoj_creds' file? [Yy/Nn]: ") in ["Y", "y"]:
         with open(".dmoj_creds", "w") as f:
             f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
-
-    # raw_name("source_file_name.extension") => "source_file_name"
-    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
-
-    # Gets the raw file_names of all the files in 'done' and 'working' directories
-    done = [raw_name(f) for f in os.listdir("done") if os.path.isfile("done/" + f)]
-    working = [raw_name(f) for f in os.listdir("working") if os.path.isfile("working/" + f)]
 
     # Gets all submissions by the user
     subs = requests.get("https://dmoj.ca/api/user/submissions/" + username).json()
@@ -132,10 +145,10 @@ def main():
     print("The following problems were marked done while not AC'ed on DMOJ:")
     print("================================================================")
     c = 0
-    for done_problem in done:
+    for number, done_problem in enumerate(done):
         if done_problem not in submission_nums:
             print("\t{}".format(done_problem))
-            os.rename("done/" + done_problem, "working/" + done_problem)
+            os.rename("done/" + done_file[number], "working/" + done_file[number])
             c += 1
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
     print()
@@ -144,10 +157,10 @@ def main():
     print("The following problems were marked in progress while AC'ed on DMOJ:")
     print("===================================================================")
     c = 0
-    for working_problem in working:
+    for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
-            os.rename("working/" + working_problem, "done/" + working_problem)
+            os.rename("working/" + working_files[number], "done/" + working_files[number])
             c += 1
     print(" -> {} files moved from 'working/' to 'done/'".format(c))
     print()
