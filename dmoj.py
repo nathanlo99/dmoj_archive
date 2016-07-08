@@ -68,29 +68,40 @@ def extract_src(file_name, submission_num):
         f.write(raw_code)
 
 def main():
+
+    global session, username, password
+
     print()
     print("Nathan Lo's DMOJ working directory manager")
     print("==========================================")
     print()
 
-    global session, username, password
-
-    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
-    done = [raw_name(f) for f in os.listdir("done") if os.path.isfile(os.path.join("done", f))]
-    working = [raw_name(f) for f in os.listdir("working") if os.path.isfile(os.path.join("working", f))]
-
+    # Get credentials, either from cache or from user
     if input("Use cached creds?  ") in ["y", "Y"] and os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
-            username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
+            username, password =
+                base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
     else:
         username = input("Username: ")
         password = getpass.getpass("Password: ")
         with open(".dmoj_creds", "w") as f:
             f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
 
+    # TODO: Check if credentials are valid
+
+    # raw_name("source_file_name.extension") => "source_file_name"
+    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
+
+    # Gets the raw file_names of all the files in 'done' and 'working' directories
+    done = [raw_name(f) for f in os.listdir("done") if os.path.isfile("done/" + f)]
+    working = [raw_name(f) for f in os.listdir("working") if os.path.isfile("working/" + f)]
+
+    # Gets all submissions by the user
     subs = requests.get("https://dmoj.ca/api/user/submissions/" + username).json()
     sub_info = {}
     submission_nums = {}
+
+    # Gets the fastest AC submission and notes the submission number and source language
     for submission_num, data in subs.items():
         if data["result"] != "AC": continue
         if data["problem"] not in sub_info or data["time"] < sub_info[data["problem"]]["time"]:
@@ -103,6 +114,7 @@ def main():
 
     completed_problems = list(submission_nums.keys())
 
+    # If something is in 'done' but not AC'ed, move those files to 'working'
     print("The following problems were marked done while not AC'ed on DMOJ:")
     print("================================================================")
     c = 0
@@ -114,6 +126,7 @@ def main():
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
     print()
 
+    # If something is marked 'in progress' when actually AC'ed, move to 'done'
     print("The following problems were marked in progress while AC'ed on DMOJ:")
     print("===================================================================")
     c = 0
@@ -125,6 +138,7 @@ def main():
     print(" -> {} files moved from 'working/' to 'done/'".format(c))
     print()
 
+    # Extracts AC problem sources that were not found in 'done'
     print("The following problems were AC'ed but the source was not found locally:")
     print("=======================================================================")
     for ac_problem in completed_problems:
@@ -134,6 +148,7 @@ def main():
             extract_src(file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
 
+    # Closes the session
     if session is not None:
         session.close()
 
