@@ -17,3 +17,6 @@ An archive of my DMOJ submissions
 - A `.dmoj_creds` file will created the first time you run `dmoj.py`, and will contain your username
 and password in a decodable format. If you do not wish to create this file, simply type `N` when
 prompted to write the `.dmoj_creds` file.
+
+**TODO**:
+Merge submit, problem_info scripts into one file, and pass command-line arguments
