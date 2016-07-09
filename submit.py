@@ -1,3 +1,4 @@
+#! /usr/local/bin/pypy3
 import sys # for exit
 import requests # for everything HTTP
 import getpass # for getpass
