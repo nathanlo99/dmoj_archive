@@ -1,4 +1,4 @@
-
+#! /usr/local/bin/pypy3
 # Gets the problem info from the problem page and displays the raw
 # text to the screen
 

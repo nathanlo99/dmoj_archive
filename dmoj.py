@@ -69,10 +69,11 @@ def login(quiet=False):
 
     return username, session
 
-# Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
-
 
 def extract_src(session, file_name, submission_num):
+    """
+    Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
+    """
     # Gets the HTML page for the submission page
     response = session.get("https://dmoj.ca/src/" + submission_num)
     html_parser = bs4.BeautifulSoup(response.text, "html.parser")
