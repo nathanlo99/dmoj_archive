@@ -1,6 +1,6 @@
 #! /usr/local/bin/pypy3
 import requests
-
+import sys
 import dmoj
 
 
@@ -18,7 +18,8 @@ def main():
         if problem not in ac_subs:
             unsolved.append((info["points"], problem))
     unsolved.sort()
-    print("\n".join("{:2}p -> {}".format(int(p[0]), p[1]) for p in unsolved[:10]))
+    num = int(sys.argv[1]) if len(sys.argv) >= 2 else 10
+    print("\n".join("{:2}p -> {}".format(int(p[0]), p[1]) for p in unsolved[:num]))
 
     session.close()
 
