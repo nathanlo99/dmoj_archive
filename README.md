@@ -13,4 +13,3 @@ An archive of my DMOJ submissions
 
 **TODO**:
 - Merge submit, problem_info scripts into one file, and pass command-line arguments
-- "Un-caps-ify" the submit script

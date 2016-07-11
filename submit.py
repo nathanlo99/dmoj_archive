@@ -1,42 +1,47 @@
 #! /usr/local/bin/pypy3
 
+import bs4
 import sys  # for exit
 import requests  # for everything HTTP
 import time  # for sleeping while waiting for judging
 import os  # for checking if a file exists
-
 import dmoj
 
 
-def problemExists(session, problem):
-    session.get("https://dmoj.ca/problem/" + problem).text.find("No such problem") != -1
+def readable_memory(kbs):
+    if kbs > 1024 * 1024:
+        return "{:.4} GB".format(kbs / (1024. * 1024.))
+    if kbs > 1024:
+        return "{:.4} MB".format(kbs / 1024.)
+    return "{:.4} KB".format(kbs)
 
 
 def getFile(session):
-    source_file = input("FILE: ").strip()
+    source_file = input("File: ").strip() if len(sys.argv) < 2 else sys.argv[1]
     while not os.path.isfile(source_file):
-        print("FILE NOT FOUND")
-        source_file = input("FILE: ").strip()
+        print("File not found: {}".format(source_file))
+        sys.exit(1)
 
-    file_name = source_file.split("/")[-1]
-    problem_name = ".".join(file_name.split(".")[:-1])
+    # done/aplusb.asm => aplusb
+    problem_name = ".".join(source_file.split("/")[-1].split(".")[:-1])
     source_text = open(source_file, "r").read()
 
     info_url = "https://dmoj.ca/api/problem/info/" + problem_name
     submit_url = "https://dmoj.ca/problem/" + problem_name + "/submit"
     info = session.get(info_url).json()
 
-    language = input("LANGUAGE: ")
+    language = sys.argv[2] if len(sys.argv) >= 3 else input("Language: ")
     available_languages = info["languages"]
-    while language not in available_languages:
-        language = input("LANGUAGE: ")
+    if language not in available_languages:
         print("Language '", language, "' not allowed or incorrectly spelled")
+        print("\n".join("\t{}".format(language) for language in available_languages))
+        sys.exit(1)
 
     print()
-    print("############## SUBMITTED SOURCE ##############")
+    print("############## Submitted source ##############")
     print(source_text)
-    print("############## SUBMITTED SOURCE ##############")
-    print("\nLANGUAGE: ", language)
+    print("############## Submitted source ##############")
+    print("\nLanguage: ", language)
 
     return source_text, language, problem_name
 
@@ -55,9 +60,9 @@ def submit(session, username, problem, source, language):
     soup = bs4.BeautifulSoup(response.text, "html.parser")
     problem_num = int(soup.find_all("input", {"id": "id_problem"})[0].get("value"))
 
-    print("PROBLEM NAME: ", info["name"])
-    print("PROBLEM#: ", problem_num)
-    print("TIME LIMIT: ", info["time_limit"])
+    print("Problem name: ", info["name"])
+    print("Problem#: ", problem_num)
+    print("Time limit: ", info["time_limit"])
 
     # Only picked commonly used languages
     # TODO: Extract this from /submit source <select> tag.
@@ -91,15 +96,15 @@ def submit(session, username, problem, source, language):
 
     response = session.post(submit_url, data=submit_payload, headers={"referer": login_url})
     if (response.status_code != requests.codes.ok):
-        print("COULD NOT SUBMIT!")
+        print("Could not submit, got an error code while accessing the submit page")
         sys.exit(4)
 
     submission_num = response.url.split("/")[-1]
 
     if submission_num == "submit":
-        print("\nSUBMISSION ERROR")
+        print("\nCould not submit: Unknown error")
         sys.exit(5)
-    print("\nSUBMITTED SUBMISSION #", submission_num, "\n")
+    print("\nSubmission succeeded #", submission_num, "\n")
 
     submissions_url = "https://dmoj.ca/api/user/submissions/" + username
 
@@ -107,15 +112,15 @@ def submit(session, username, problem, source, language):
     submission = response.json()[str(submission_num)]
 
     while submission["status"] not in ["CE", "D"]:
-        print("\rGRADING STATUS:", submission["status"])
+        print("\rGrading Status:", submission["status"])
         time.sleep(1)
         response = session.get(submissions_url)
         submission = response.json()[str(submission_num)]
 
-    print("RESULT: ", submission["result"])
-    print("TIME: ", submission["time"])
-    print("LANGUAGE: ", submission["language"])
-    print("MEMORY: ", submission["memory"])
+    print("Result   : {}".format(submission["result"]))
+    print("Time     : {:.3}s".format(submission["time"]))
+    print("Language : {}".format(submission["language"]))
+    print("Memory   : {}".format(readable_memory(submission["memory"])))
 
     return submission_num
 
