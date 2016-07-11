@@ -1,56 +1,13 @@
 #! /usr/local/bin/pypy3
 import sys # for exit
 import requests # for everything HTTP
-import getpass # for getpass
-import bs4 # for html parsing and searching
 import time # for sleeping while waiting for judging
-import base64 # for encoding passwords into client-side cache file
 import os # for checking if a file exists
 
-def login(session, read_cache):
-	login_url = "https://dmoj.ca/accounts/login/"
-	CHECK_URL = "https://dmoj.ca/user"
-
-	CACHE_FILE = ".dmoj_creds"
-	if not os.path.isfile(CACHE_FILE) or not read_cache:
-		print("CACHE FILE NOT FOUND: CREATING...")
-		with open(CACHE_FILE, "wb") as CACHE:
-			USERNAME = input("USERNAME: ").strip()
-			PASSWORD = getpass.getpass("PASSWORD: ").strip()
-			CACHE.write(base64.b64encode(bytes(USERNAME + "å" + PASSWORD, "utf-8")).decode("utf-8"))
-
-	else:
-		with open(CACHE_FILE, "r") as CACHE:
-			print("USING CACHED PASSWORD")
-			USERNAME, PASSWORD = base64.b64decode(CACHE.readline().encode("utf-8")).decode("utf-8").split("å")
-
-	# To fetch csrftoken (DMOJ requires this in order to log in)
-	session.get(login_url)
-
-	# Payload to post to server
-	login_data = {
-		"username": USERNAME,
-		"password": PASSWORD,
-		"csrfmiddlewaretoken": session.cookies["csrftoken"],
-	}
-
-	# Posts the payload
-	session.post(login_url, data=login_data, headers={"Referer": login_url})
-
-	# Gets a private page to check if login was successful.
-	response = session.get(CHECK_URL)
-
-	# If redirected to login page, login was unsuccessful.
-	if (response.text.find("Login")) == -1:
-		print("LOGIN SUCCESSFUL\n")
-		return USERNAME
-	else:
-		print("LOGIN FAILED\n")
-		return None
+import dmoj
 
 def problemExists(session, problem):
-	response = session.get("https://dmoj.ca/problem/" + problem)
-	return response.text.find("No such problem") != -1
+	session.get("https://dmoj.ca/problem/" + problem).text.find("No such problem") != -1
 
 def getFile(session):
 	source_file = input("FILE: ").strip()
@@ -60,7 +17,6 @@ def getFile(session):
 
 	file_name = source_file.split("/")[-1]
 	problem_name = ".".join(file_name.split(".")[:-1])
-	print(problem_name)
 	source_text = open(source_file, "r").read()
 
 	info_url = "https://dmoj.ca/api/problem/info/" + problem_name
@@ -123,13 +79,13 @@ def submit(session, username, problem, source, language):
 	}
 
 	submit_payload = {
-		"problem":problem_num,
-		"source":source,
-		"language":language_nums[language],
+		"problem": problem_num,
+		"source": source,
+		"language": language_nums[language],
 		"csrfmiddlewaretoken": session.cookies["csrftoken"],
 	}
 
-	response = session.post(submit_url, data=submit_payload, headers={"referer": login_url}, allow_redirects=True)
+	response = session.post(submit_url, data=submit_payload, headers={"referer": login_url})
 	if (response.status_code != requests.codes.ok):
 		print("COULD NOT SUBMIT!")
 		sys.exit(4)
@@ -168,12 +124,7 @@ def results(session, submission_num):
 		print(" ".join(entry.get_text().split()))
 
 def main():
-	# To preserve session cookies
-	session = requests.session()
-
-	username = login(session, True)
-	while not username: username = login(session, False)
-
+	username, session = dmoj.login()
 	source, language, problem = getFile(session)
 	submission_num = submit(session, username, problem, source, language)
 	results(session, submission_num)

@@ -23,8 +23,8 @@ extensions = {
     "TUR": "t",
 }
 
-def login(username, password):
-    print("Attempting login...")
+def try_login(username, password, quiet=False):
+    if not quiet: print("Attempting login...")
     session = requests.Session()
     # Fetches the csrftoken from dmoj.ca
     session.get("https://dmoj.ca")
@@ -33,17 +33,36 @@ def login(username, password):
         "password": password,
         "csrfmiddlewaretoken": session.cookies["csrftoken"],
     }
-    headers = {
-        "Referer": "https://dmoj.ca/",
-        "Upgrade-Insecure-Requests": "1",
-    }
-    session.headers.update(headers)
+    session.headers.update({"Referer": "https://dmoj.ca/"})
     # Logs in with the session
     session.post("https://dmoj.ca/accounts/login/?next=/", data=payload)
     response = session.get("https://dmoj.ca/edit/profile/")
     # If the HTML returned contains the word "login", DMOJ probably redirected us to the login page
     # Therefore, login was unsucessful
     return (session, response.text.find("login") == -1)
+
+def login(quiet=False):
+    # Get credentials, either from cache or from user
+    if os.path.isfile(".dmoj_creds"):
+        with open(".dmoj_creds", "r") as f:
+            username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
+    else:
+        username = input(" -> Username: ")
+        password = getpass.getpass(" -> Password: ")
+
+    session, login_successful = try_login(username, password, quiet=quiet)
+    while not login_successful:
+        print("Login unsuccessful... ")
+        username = input(" -> Username: ")
+        password = getpass.getpass(" -> Password: ")
+        session, login_successful = login(username, password)
+
+    if not quiet: print("Login successful!")
+
+    with open(".dmoj_creds", "w") as f:
+        f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
+
+    return username, session
 
 # Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
 def extract_src(session, file_name, submission_num):
@@ -72,7 +91,6 @@ def main():
     print("==========================================")
     print()
 
-    used_cache = False
     # raw_name("source_file_name.extension") => "source_file_name"
     raw_name = lambda extended: ".".join(extended.split(".")[:-1])
 
@@ -92,28 +110,7 @@ def main():
         working_files = []
         working = []
 
-    used_cache = False
-    # Get credentials, either from cache or from user
-    if input("Use cached creds?  ") in ["y", "Y"] and os.path.isfile(".dmoj_creds"):
-        with open(".dmoj_creds", "r") as f:
-            username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
-            used_cache = True
-    else:
-        username = input(" -> Username: ")
-        password = getpass.getpass(" -> Password: ")
-
-    session, login_successful = login(username, password)
-    while not login_successful:
-        print("Login unsuccessful... ")
-        username = input(" -> Username: ")
-        password = getpass.getpass(" -> Password: ")
-        session, login_succesful = login(username, password)
-
-    print("Login successful!")
-
-    if not used_cache and input("Write '.dmoj_creds' file? [Yy/Nn]: ") in ["Y", "y"]:
-        with open(".dmoj_creds", "w") as f:
-            f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
+    username, session = login()
 
     # Gets all submissions by the user
     subs = requests.get("https://dmoj.ca/api/user/submissions/" + username).json()
