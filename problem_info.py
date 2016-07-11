@@ -4,8 +4,9 @@
 
 import requests
 import bs4
+import sys
 
-problem_name = input("Problem: ")
+problem_name = sys.argv[1] if len(sys.argv) >= 2 else input("Problem: ")
 response = requests.get("https://dmoj.ca/problem/" + problem_name)
 
 while response.text.find("No such problem") != -1:
