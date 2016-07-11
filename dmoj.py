@@ -23,8 +23,10 @@ extensions = {
     "TUR": "t",
 }
 
+
 def try_login(username, password, quiet=False):
-    if not quiet: print("Attempting login...")
+    if not quiet:
+        print("Attempting login...")
     session = requests.Session()
     # Fetches the csrftoken from dmoj.ca
     session.get("https://dmoj.ca")
@@ -41,11 +43,13 @@ def try_login(username, password, quiet=False):
     # Therefore, login was unsucessful
     return (session, response.text.find("login") == -1)
 
+
 def login(quiet=False):
     # Get credentials, either from cache or from user
     if os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
-            username, password = base64.b64decode(f.readline().encode("utf-8")).decode("utf-8").split("å")
+            username, password = base64.b64decode(
+                f.readline().encode("utf-8")).decode("utf-8").split("å")
     else:
         username = input(" -> Username: ")
         password = getpass.getpass(" -> Password: ")
@@ -57,7 +61,8 @@ def login(quiet=False):
         password = getpass.getpass(" -> Password: ")
         session, login_successful = login(username, password)
 
-    if not quiet: print("Login successful!")
+    if not quiet:
+        print("Login successful!")
 
     with open(".dmoj_creds", "w") as f:
         f.write(base64.b64encode(bytes(username + "å" + password, "utf-8")).decode("utf-8"))
@@ -65,6 +70,8 @@ def login(quiet=False):
     return username, session
 
 # Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
+
+
 def extract_src(session, file_name, submission_num):
     # Gets the HTML page for the submission page
     response = session.get("https://dmoj.ca/src/" + submission_num)
@@ -83,6 +90,7 @@ def extract_src(session, file_name, submission_num):
     raw_code = code_element.get_text()
     with open(file_name, "w") as f:
         f.write(raw_code)
+
 
 def main():
 
@@ -120,7 +128,8 @@ def main():
     # Gets the fastest AC submission with the most points and notes the submission number and
     # source language
     for submission_num, data in subs.items():
-        if data["result"] != "AC": continue
+        if data["result"] != "AC":
+            continue
         info = {
             "num": submission_num,
             "lang": data["language"],
@@ -133,7 +142,7 @@ def main():
         else:
             current_info = sub_info[data["problem"]]
             if (data["points"] > current_info["points"] or
-               (data["points"] == current_info["points"] and data["time"] < current_info["time"])):
+                    (data["points"] == current_info["points"] and data["time"] < current_info["time"])):
                 sub_info[data["problem"]] = info
                 submission_nums[data["problem"]] = submission_num
 
