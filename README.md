@@ -19,4 +19,5 @@ and password in a decodable format. If you do not wish to create this file, simp
 prompted to write the `.dmoj_creds` file.
 
 **TODO**:
-Merge submit, problem_info scripts into one file, and pass command-line arguments
+- Merge submit, problem_info scripts into one file, and pass command-line arguments
+- "Un-caps-ify" the submit script

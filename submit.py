@@ -1,4 +1,5 @@
 #! /usr/local/bin/pypy3
+
 import sys  # for exit
 import requests  # for everything HTTP
 import time  # for sleeping while waiting for judging

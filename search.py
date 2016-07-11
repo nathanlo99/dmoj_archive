@@ -1,11 +1,11 @@
 
 import requests
 
-from dmoj import login
+import dmoj
 
 
 def main():
-    username, session = login(quiet=True)
+    username, session = dmoj.login(quiet=True)
     # Gets all submissions by the user
     subs = session.get("https://dmoj.ca/api/user/submissions/" + username).json()
 
