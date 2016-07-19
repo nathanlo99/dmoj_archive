@@ -11,7 +11,7 @@ def solve(a, b, c, d, n, cur=[0, 0, 0, 0]):
 	if n >= d:
 		solve(a, b, c, d, n - d, [cur[0], cur[1], cur[2], cur[3] + 1])
 	if n == 0:
-		global min_tickets
+		global min_tickets, combinations
 		if min_tickets == None or sum(cur) < min_tickets:
 			min_tickets = sum(cur)
 		if cur not in combinations:
