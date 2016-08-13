@@ -20,11 +20,7 @@ int main() {
     value[i] = value[i - 1] + diff[i - 1];
     sum[i] = sum[i - 1] + value[i];
   }
-<<<<<<< HEAD
   int min = 9999999;
-=======
-  int min = 99999999999;
->>>>>>> 62ee18846b9e8a07bf0c3f0d185d3634f63fb8ae
   int l = 0;
   for (int r = 1; r <= N; r++) {
       while (l <= r && sum[r] - sum[l] >= K) {
