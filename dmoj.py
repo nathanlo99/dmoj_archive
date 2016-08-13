@@ -167,9 +167,9 @@ def main():
     for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
-            os.rename("working/" + working_files[number], "done/" + working_files[number])
+            os.remove("working/" + working_files[number])
             c += 1
-    print(" -> {} files moved from 'working/' to 'done/'".format(c))
+    print(" -> {} files removed from 'working/'".format(c))
     print()
 
     # Extracts AC problem sources that were not found in 'done'
