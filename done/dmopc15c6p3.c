@@ -23,10 +23,11 @@ int main() {
   int min = 9999999;
   int l = 0;
   for (int r = 1; r <= N; r++) {
-      while (l <= r && sum[r] - sum[l] >= K) {
-         if (min > r - l) min = r - l;
-         l++;
-      }
+    while (l <= r && sum[r] - sum[l] >= K) {
+      if (min > r - l)
+        min = r - l;
+      l++;
+    }
   }
   printf("%d\n", min > N ? -1 : min);
   return 0;

@@ -1,1 +1,1 @@
-print(360./int(input()))
+print(360. / int(input()))
