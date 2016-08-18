@@ -26,6 +26,8 @@ def getFile(session):
     problem_name = ".".join(source_file.split("/")[-1].split(".")[:-1])
     source_text = open(source_file, "r").read()
 
+    print("Submitting: {}".format(source_file))
+
     info_url = "https://dmoj.ca/api/problem/info/" + problem_name
     submit_url = "https://dmoj.ca/problem/" + problem_name + "/submit"
     info = session.get(info_url).json()
