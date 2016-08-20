@@ -1,11 +1,15 @@
 #include "stdio.h"
 #include "string.h"
 
-static char C[1000005];
+int N;
+char A[100001], B[100001];
+static char C[100005];
 
-void compute(char *A, char *B, const int flip, const int add) {
+static void compute(char *A, char *B, const int flip, const int add) {
   const int lenA = strlen(A);
   const int lenB = strlen(B);
+  int carry = 0, comp = 0, borrow = 0;
+  char *Cp = C;
   const int maxL = lenA > lenB ? lenA : lenB;
   if (lenA > lenB) {
     const int diff = lenA - lenB;
@@ -22,9 +26,6 @@ void compute(char *A, char *B, const int flip, const int add) {
   }
 
   if (add) {
-    int carry = 0;
-    char *Cp = C;
-    int Cindex = 0;
     for (int i = maxL - 1; i >= 0; i--) {
       const int value = A[i] - '0' + B[i] - '0' + carry;
       carry = value >= 10;
@@ -39,20 +40,15 @@ void compute(char *A, char *B, const int flip, const int add) {
       printf("%c", *Cp--);
 
   } else {
-    int comp = 0;
-    char ac, bc;
-
     if (lenA > lenB)
       comp = 1;
     else if (lenB > lenA)
       comp = -1;
     else {
       for (int i = 0; i < lenA; i++) {
-        ac = A[i];
-        bc = B[i];
-        if (ac == bc)
+        if (A[i] == B[i])
           continue;
-        comp = ac > bc ? 1 : -1;
+        comp = A[i] > B[i] ? 1 : -1;
         break;
       }
     }
@@ -65,9 +61,6 @@ void compute(char *A, char *B, const int flip, const int add) {
       return;
     }
 
-    int borrow = 0;
-    int Cindex = 0;
-    char *Cp = C;
     for (int i = maxL - 1; i >= 0; i--) {
       const int value = A[i] - B[i] - borrow;
       borrow = value < 0;
@@ -85,8 +78,6 @@ void compute(char *A, char *B, const int flip, const int add) {
 }
 
 int main() {
-  int N;
-  char A[100001], B[100001];
   scanf("%d", &N);
   while (N--) {
     scanf("%s %s", A, B);
