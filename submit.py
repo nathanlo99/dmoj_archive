@@ -113,7 +113,7 @@ def submit(session, username, problem, source, language):
     response = session.get(submissions_url)
     submission = response.json()[str(submission_num)]
 
-    while submission["status"] not in ["CE", "D"]:
+    while submission["status"] not in ["CE", "D", "AB"]:
         print("\rGrading Status:", submission["status"])
         time.sleep(1)
         response = session.get(submissions_url)
