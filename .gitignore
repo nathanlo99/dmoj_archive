@@ -3,3 +3,4 @@ working
 todo.txt
 __pycache__
 auto_add
+*.swp
