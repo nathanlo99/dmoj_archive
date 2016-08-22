@@ -75,22 +75,9 @@ def extract_src(session, file_name, submission_num):
     Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
     """
     # Gets the HTML page for the submission page
-    response = session.get("https://dmoj.ca/src/" + submission_num)
-    html_parser = bs4.BeautifulSoup(response.text, "html.parser")
-    # Modern DMOJ places the source code into a <code> ... </code> block
-    code_element = html_parser.find("code")
-    # Older DMOJ uses <td class=source-code> ... </td>
-    if code_element is None:
-        code_element = html_parser.find("td", "source-code")
-    # TODO: There may be other DMOJ formats that are not yet supported
-    if code_element is None:
-        print("WARNING: No code found for submission {}, dumping HTML".format(submission_num))
-        print(response.text)
-        return
-    # Writes the code into the file
-    raw_code = code_element.get_text()
+    response = session.get("https://dmoj.ca/src/" + submission_num + "/raw")
     with open(file_name, "w") as f:
-        f.write(raw_code)
+        f.write(response.text)
 
 
 def main():
