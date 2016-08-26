@@ -9,6 +9,8 @@ import dmoj
 
 
 def readable_memory(kbs):
+    if kbs is None:
+        return "N/A"
     if kbs > 1024 * 1024:
         return "{:.4} GB".format(kbs / (1024. * 1024.))
     if kbs > 1024:
