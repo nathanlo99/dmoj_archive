@@ -15,6 +15,7 @@ extensions = {
     "PY2": "py",
     "C": "c",
     "CLANG": "c",
+    "CLANGX": "cpp",
     "CPP": "cpp",
     "CPP03": "cpp",
     "CPP11": "cpp",
