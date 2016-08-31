@@ -85,6 +85,7 @@ def submit(session, username, problem, source, language):
         'JAVA': 7,
         'JAVA8': 25,
         'PAS': 10,
+        'TEXT': 51,
         'FORTRAN': 19,
         'TURING': 24,
         'NASM': 20,
