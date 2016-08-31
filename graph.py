@@ -26,7 +26,7 @@ for user in users:
         if data["result"] != "AC":
             continue
         problem_name = data["problem"]
-        points[problem_name] = data["points"]
+        points[problem_name] = max(points.get(problem_name, 0), data["points"])
         submission_numbers[problem_name].append(int(num))
     for problem in submission_numbers:
         first_ac[problem] = min(submission_numbers[problem])
