@@ -1,4 +1,4 @@
-#! /usr/local/bin/python3
+#! /usr/bin/env python3
 
 # graph.py will take an arbitrary number of command-line arguments, representing users,
 #   and plot their points over time in a pyplot graph.
@@ -18,27 +18,27 @@ for user in users:
         print("User not found: {}, skipping".format(user))
         continue
     subs_json = reply.json()
-    submission_numbers = collections.defaultdict(list)
-    first_ac = {}
-    points = {}
-    submissions = []
+    best_submission = {}
     for num, data in subs_json.items():
-        if data["result"] != "AC":
-            continue
+        num = int(num)
         problem_name = data["problem"]
-        points[problem_name] = max(points.get(problem_name, 0), data["points"])
-        submission_numbers[problem_name].append(int(num))
-    for problem in submission_numbers:
-        first_ac[problem] = min(submission_numbers[problem])
-        submissions.append((first_ac[problem], points[problem]))
+        points = data["points"]
+        if points is None or points == 0:
+            continue
+        if problem_name not in best_submission:
+            best_submission[problem_name] = (num, points)
+        elif points > best_submission[problem_name][1]:
+            best_submission[problem_name] = (num, points)
     total_points = 0
     data_x = []
     data_y = []
-    for submission_number, points_earned in sorted(submissions):
+    for submission_number, points_earned in sorted(best_submission.values()):
         total_points += points_earned
         data_x.append(submission_number)
         data_y.append(total_points)
+    print("Total points for '{}': {}".format(user, total_points))
     plt.plot(data_x, data_y, label=user)
+
     # BIG TODO:
     # Once DMOJ's API makes finding out the date a submission was submitted, I will 
     # make the x-axis time instead of submission number, although they correlate roughly
