@@ -1,11 +1,28 @@
-#! /usr/local/bin/pypy3
+#! /usr/bin/env python3
 
 import bs4
 import sys  # for exit
 import requests  # for everything HTTP
 import time  # for sleeping while waiting for judging
 import os  # for checking if a file exists
+import shutil  # for checking terminal width
 import dmoj
+
+
+def pretty_print_list(n):
+    # Prints a list of strings in columns
+    max_length = max(map(len, n))
+    term_size = shutil.get_terminal_size((0, 0))
+    width = term_size.columns
+    padding = 3
+    num_entries_per_col = width // (max_length + padding) - 1
+    col = 0
+    for entry in n:
+        print(("{:>" + str(max_length + padding) + "}").format(entry), end="")
+        col += 1
+        if col == num_entries_per_col:
+            col = 0
+            print()
 
 
 def readable_memory(kbs):
@@ -36,10 +53,14 @@ def getFile(session):
 
     language = sys.argv[2] if len(sys.argv) >= 3 else input("Language: ")
     available_languages = info["languages"]
-    if language not in available_languages:
+    while language not in available_languages:
         print("Language '", language, "' not allowed or incorrectly spelled")
-        print("\n".join("\t{}".format(language) for language in available_languages))
-        sys.exit(1)
+        print("Allowed languages for this problem: ")
+        print()
+        pretty_print_list(available_languages)
+        print("\n")
+        # print("\n".join("\t{}".format(language) for language in available_languages))
+        language = input("Language: ")
 
     print()
     print("############## Submitted source ##############")
@@ -135,7 +156,6 @@ def submit(session, username, problem, source, language):
         # 'VB': ?,
         # 'VC': ?,
         'V8JS': 27
-
     }
 
     submit_payload = {
@@ -162,13 +182,18 @@ def submit(session, username, problem, source, language):
     response = session.get(submissions_url)
     submission = response.json()[str(submission_num)]
 
+    seconds = 0
     while submission["status"] not in ["CE", "D", "AB"]:
         print("\rGrading Status:", submission["status"])
+        print("   ({} seconds)".format(seconds))
         time.sleep(1)
+        seconds += 1
         response = session.get(submissions_url)
         submission = response.json()[str(submission_num)]
 
     print("Result   : {}".format(submission["result"]))
+    if submission["time"] is None:
+        submission["time"] = -1.0
     print("Time     : {:.3}s".format(submission["time"]))
     print("Language : {}".format(submission["language"]))
     print("Memory   : {}".format(readable_memory(submission["memory"])))
@@ -180,7 +205,13 @@ def results(session, submission_num):
     response = session.get("https://dmoj.ca/submission/" + str(submission_num))
     html = bs4.BeautifulSoup(response.text, "html.parser")
     table = html.find("table")
+    if table is None:
+        # This sometimes happens when submissions get CE (compilation errors)
+        print("\nNo results available")
+        return
+
     print()
+    # TODO: Display all the batches
     for entry in table.find_all("tr"):
         print(" ".join(entry.get_text().split()))
 
