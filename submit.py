@@ -137,7 +137,7 @@ def submit(session, username, problem, source, language):
         # 'PHP7': ?
         'PIKE': 68,
         'PRO': 47,
-        'PYPY2': 17,
+        'PYPY': 17,
         'PYPY3': 18,
         'PY2': 1,
         'PY3': 8,
