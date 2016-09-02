@@ -23,6 +23,7 @@ extensions = {
     "BF": "bf",
     "NASM": "asm",
     "TUR": "t",
+    "TEXT": "txt",
 }
 
 
