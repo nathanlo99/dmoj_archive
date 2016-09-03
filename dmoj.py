@@ -152,7 +152,7 @@ def main():
     for number, done_problem in enumerate(done):
         if done_problem not in submission_nums:
             print("\t{}".format(done_problem))
-            os.rename(os.path.join("done", done_file[number]), os.path.join("working", done_file[number]))
+            os.rename(os.path.join("done", done_files[number]), os.path.join("working", done_files[number]))
             c += 1
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
     print()
