@@ -177,7 +177,9 @@ def main():
     c = 0
     for ac_problem in submission_nums:
         if ac_problem not in done:
-            file_name = os.path.join("done", ac_problem + "." + extensions[sub_info[ac_problem]["lang"]])
+            lang = sub_info[ac_problem]["lang"]
+            extension = extensions.get(lang, lang.lower())
+            file_name = os.path.join("done", ac_problem + "." + extension)
             submission_num = submission_nums[ac_problem]
             extract_src(session, file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
