@@ -95,14 +95,14 @@ def main():
 
     # Gets the raw file_names of all the files in 'done' and 'working' directories
     if os.path.isdir("done"):
-        done_files = [f for f in os.listdir("done") if os.path.isfile("done/" + f)]
+        done_files = [f for f in os.listdir("done") if os.path.isfile(os.path.join("done", f))]
         done = [raw_name(f) for f in done_files]
     else:
         os.mkdir("done")
         done_files = []
         done = []
     if os.path.isdir("working"):
-        working_files = [f for f in os.listdir("working") if os.path.isfile("working/" + f)]
+        working_files = [f for f in os.listdir("working") if os.path.isfile(os.path.join("working", f))]
         working = [raw_name(f) for f in working_files]
     else:
         os.mkdir("working")
@@ -145,7 +145,7 @@ def main():
     for number, done_problem in enumerate(done):
         if done_problem not in submission_nums:
             print("\t{}".format(done_problem))
-            os.rename("done/" + done_file[number], "working/" + done_file[number])
+            os.rename(os.path.join("done", done_file[number]), os.path.join("working", done_file[number]))
             c += 1
     print(" -> {} files moved from 'done/' to 'working/'".format(c))
     print()
@@ -157,7 +157,8 @@ def main():
     for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
-            os.remove("working/" + working_files[number])
+
+            os.remove(os.path.join("working", working_files[number]))
             c += 1
     print(" -> {} files removed from 'working/'".format(c))
     print()
@@ -168,7 +169,7 @@ def main():
     c = 0
     for ac_problem in submission_nums:
         if ac_problem not in done:
-            file_name = "done/" + ac_problem + "." + extensions[sub_info[ac_problem]["lang"]]
+            file_name = os.path.join("done", ac_problem + "." + extensions[sub_info[ac_problem]["lang"]])
             submission_num = submission_nums[ac_problem]
             extract_src(session, file_name, submission_nums[ac_problem])
             print(" -> Wrote {}".format(file_name))
