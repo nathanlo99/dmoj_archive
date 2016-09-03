@@ -95,14 +95,22 @@ def main():
 
     # Gets the raw file_names of all the files in 'done' and 'working' directories
     if os.path.isdir("done"):
-        done_files = [f for f in os.listdir("done") if os.path.isfile(os.path.join("done", f))]
+        # FIXME Apparently crashes on Windows because of '.' and '..'
+        done_files = []
+        for f in os.listdir("done"):
+            if os.path.isfile(os.path.join("done", f)):
+                done_files.append(f)
         done = [raw_name(f) for f in done_files]
     else:
         os.mkdir("done")
         done_files = []
         done = []
     if os.path.isdir("working"):
-        working_files = [f for f in os.listdir("working") if os.path.isfile(os.path.join("working", f))]
+        # FIXME See above
+        working_files = []
+        for f in os.listdir("working"):
+            if os.path.isfile(os.path.join("working", f)):
+                working_files.append(f)
         working = [raw_name(f) for f in working_files]
     else:
         os.mkdir("working")
