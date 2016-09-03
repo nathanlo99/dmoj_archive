@@ -1,9 +1,9 @@
 import sys
 input = sys.stdin.readline
 
-for _ in range(int(input())):
+for _ in xrange(int(input())):
     n = int(input())
-    d = [int(input()) for i in range(n)]
+    d = [int(input()) for i in xrange(n)]
     next_item = 1
     stack = []
     while d:

@@ -1,8 +1,10 @@
+import sys
+input = sys.stdin.readline
 import itertools
 presents = []
 total_w = 0
 n = int(input())
-for _ in range(n):
+for _ in xrange(n):
     f, w = map(int, input().split())
     total_w += w
     presents.append((w, f))

@@ -1,9 +1,7 @@
 input()
 visited = set()
-last = "O"
 x, y = 0, 0
 visited.add((x, y))
-opposite = {"L": "R", "R": "L", "U": "D", "D": "U"}
 for i, c in enumerate(input().split()):
     if c == "L":
         x -= 1

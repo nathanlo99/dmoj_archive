@@ -4,7 +4,7 @@ input = sys.stdin.readline
 length = int(input())
 n = int(input())
 segments = []
-for i in range(n):
+for i in xrange(n):
     a, b = map(int, input().split())
     segments.append((a, b))
 segments.sort()

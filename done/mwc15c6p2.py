@@ -1,3 +1,5 @@
+import sys
+input = sys.stdin.readline
 from bisect import bisect_left
 
 def sieve(n):

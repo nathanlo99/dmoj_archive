@@ -1,4 +1,7 @@
-nums = sorted(int(input()) for _ in range(int(input())))
+import sys
+input = sys.stdin.readline
+
+nums = sorted(int(input()) for _ in xrange(int(input())))
 p = 0
 ans = 1
 m = False

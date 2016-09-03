@@ -1,4 +1,1 @@
-input()
-a = set(input().split())
-b = set(input().split())
-print(len(a & b))
+print((lambda a, b, c: len(set(b.split()) & set(c.split())))(input(), input(), input()))

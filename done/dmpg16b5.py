@@ -1,5 +1,8 @@
+import sys
+input = sys.stdin.readline
+
 m, n = map(int, input().split())
-b = sorted((int(input()) for i in range(n)), reverse=True)
+b = sorted((int(input()) for i in xrange(n)), reverse=True)
 
 max_v = -10000000000
 max_i = None

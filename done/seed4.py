@@ -11,7 +11,7 @@ def gcd_xyz(x, y, z):
 x, y, z = map(int, input().split())
 
 k = set()
-for i in range(int(input())):
+for i in xrange(int(input())):
     a, b, c = map(int, input().split())
     g = gcd_xyz(a - x, b - y, c - z)
     k.add(g)

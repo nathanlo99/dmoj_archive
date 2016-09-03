@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 def prob(a, b, c):
     ans = 0
     a0 = int(ord(a[0]) >= ord('a'))
@@ -17,6 +20,6 @@ b = input()
 c = input()
 
 ans = 1.0
-for i in range(0, 2 * n, 2):
+for i in xrange(0, 2 * n, 2):
     ans *= prob(a[i: i + 2], b[i: i + 2], c[i: i + 2])
 print("{:.6f}".format(ans))
