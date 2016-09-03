@@ -16,7 +16,6 @@ extensions = {
     "C": "c",
     "CLANG": "c",
     "CLANGX": "cpp",
-    "CPP": "cpp",
     "CPP03": "cpp",
     "CPP11": "cpp",
     "CPP14": "cpp",
