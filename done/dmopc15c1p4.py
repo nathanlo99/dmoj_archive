@@ -16,10 +16,8 @@ c = 0
 for p in primes:
     if p > n:
         break
-    c += (n - p) // x + 1
-    two = (n - p) // x + 1
+    c += 2 * ((n - p) // x) + 2
     if (n - p) % x == 0:
-        two -= 1
-    c += two
+        c -= 1
 
 print(c)
