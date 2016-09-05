@@ -3,11 +3,9 @@
 # graph.py will take an arbitrary number of command-line arguments, representing users,
 #   and plot their points over time in a pyplot graph.
 
-import collections
 import sys
 import matplotlib.pyplot as plt
 import requests
-import bs4
 
 
 def main():
@@ -45,7 +43,7 @@ def main():
         plt.plot(data_x, data_y, label=user)
 
     # BIG TODO:
-    # Once DMOJ's API makes finding out the date a submission was submitted, I will 
+    # Once DMOJ's API makes finding out the date a submission was submitted, I will
     # make the x-axis time instead of submission number, although they correlate roughly
     # linearly (??)
 

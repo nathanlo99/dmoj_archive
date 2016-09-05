@@ -2,7 +2,6 @@
 import requests    # The base module for GET and POST requests
 import getpass     # Gets the password securely
 import base64      # To 'encode' the DMOJ credentials
-import bs4         # To inspect the HTML files sent back by DMOJ
 import os          # To inspect the file system
 import os.path     # For 'isfile' and 'join' methods
 

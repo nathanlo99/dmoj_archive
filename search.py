@@ -1,5 +1,4 @@
 #! /usr/local/bin/pypy3
-import requests
 import sys
 import dmoj
 
