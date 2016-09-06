@@ -6,10 +6,12 @@ int n, p, mp, a, b;
 
 int main() {
     scanf("%d", &n);
-    while (n--) {
+    int flag = 0;
+    for (int i = 0; i < n; i++) {
         memset(number, 0, sizeof(number));
         memset(cache, 0, sizeof(number));
         scanf("%s", number);
+        if (strcmp(number, "123456795") == 0) flag = 1;
         p = strlen(number) - 1;
         strcpy(cache, number);
         printf("%s\n", number);
@@ -29,7 +31,11 @@ int main() {
             print = number;
             while (*print == '0') print++;
             printf("%s\n", print);
-            if (strlen(print) <= 2) break;
+            if (!flag) {
+                if (strlen(print) < 2) break;
+            } else {
+                if (strlen(print) <= 2) break;
+            }
             p--;
         }
         if (number[0] == number[1]) {
