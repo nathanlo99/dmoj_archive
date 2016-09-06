@@ -1,15 +1,13 @@
+import sys
+input = sys.stdin.readline
+
 input()
-towers = map(int, input().split())
-height_stack = [1000000]
-index_stack = [0]
-views = []
+stack = [(1000000, 0)]
 
-for index, tower in enumerate(towers):
-    while len(height_stack) > 0 and tower >= height_stack[-1]:
-        height_stack.pop()
-        index_stack.pop()
-    views.append(index - index_stack[-1])
-    height_stack.append(tower)
-    index_stack.append(index)
-
-print(" ".join(map(str, views)))
+ans = []
+for index, tower in enumerate(map(int, input().split())):
+    while tower >= stack[-1][0]:
+        stack.pop()
+    ans.append(index - stack[-1][1])
+    stack.append((tower, index))
+print(" ".join(map(str, ans)))
