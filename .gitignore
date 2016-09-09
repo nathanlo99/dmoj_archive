@@ -5,3 +5,4 @@ __pycache__
 auto_add
 *.swp
 cache.txt
+.ropeproject/
