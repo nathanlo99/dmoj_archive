@@ -3,9 +3,8 @@
 
 typedef struct { int l, r, gcd, min, num_gcd; } node;
 
-int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
-
-int min(int a, int b) { return a > b ? b : a; }
+inline int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
+inline int min(int a, int b) { return a > b ? b : a; }
 
 int n, m, a, b;
 node segment_tree[100000 * 3];

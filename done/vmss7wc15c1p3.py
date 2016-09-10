@@ -22,7 +22,6 @@ def p(n):
             return 3
         if n - prime in primes:
             return 2
-    return 3
 
 n, k = map(int, input().split())
 if k > 3:

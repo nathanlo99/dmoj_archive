@@ -1,9 +1,12 @@
-d = int(input())
-clubs = [int(input()) for i in range(int(input()))]
+import sys
+input = sys.stdin.readline
 
-dp = [100000 for i in range(d + 1)]
+d = int(input())
+clubs = [int(input()) for i in xrange(int(input()))]
+
+dp = [100000 for i in xrange(d + 1)]
 dp[0] = 0
-for i in range(d + 1):
+for i in xrange(d + 1):
     if dp[i] != 100000:
         for club in clubs:
             if i + club <= d:
