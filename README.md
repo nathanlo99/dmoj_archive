@@ -1,6 +1,9 @@
 # DMOJ Archive
 An archive of my DMOJ submissions
 
+**Disclaimer**:
+- Solutions are made public for reference only: Copying of solutions will not be tolerated and those who do will be promptly reported to DMOJ admins.
+
 **How to run the scripts**:
 - Move the scripts to a fresh directory
 - chmod the scripts
