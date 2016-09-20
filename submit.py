@@ -180,7 +180,12 @@ def submit(session, username, problem, source, language):
     submissions_url = "https://dmoj.ca/api/user/submissions/" + username
 
     response = session.get(submissions_url)
-    submission = response.json()[str(submission_num)]
+    response_json = response.json()
+    if str(submission_num) not in response_json:
+        print("[ Submission results not visible ]")
+        return submission_num
+
+    submission = response_json[str(submission_num)]
 
     seconds = 0
     while submission["status"] not in ["CE", "D", "AB"]:
