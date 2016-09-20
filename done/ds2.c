@@ -3,10 +3,7 @@
 int n, m, a, b, root[100001], edges[100001], num_edges;
 
 int find_root(int n) {
-    if (n != root[n]) {
-        root[n] = find_root(root[n]);
-    }
-    return root[n];
+    return n == root[n] ? root[n] : (root[n] = find_root(root[n]));
 }
 
 int main() {

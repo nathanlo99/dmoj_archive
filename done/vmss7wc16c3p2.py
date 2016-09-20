@@ -1,12 +1,15 @@
+import sys
+input = sys.stdin.readline
+
 n, m, a, b = map(int, input().split())
-root = [i for i in range(n + 1)]
+root = list(xrange(n + 1))
 
 def find_root(n):
     while root[n] != n:
         n = root[n]
     return n
 
-for i in range(m):
+for i in xrange(m):
     x, y = map(int, input().split())
     root[find_root(y)] = find_root(x)
 

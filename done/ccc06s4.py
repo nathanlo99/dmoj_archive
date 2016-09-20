@@ -1,12 +1,15 @@
+import sys
+input = sys.stdin.readline
+
 while True:
     n = int(input())
     if n == 0:
         break
     m = [[-1 for i in range(n + 1)]]
-    for row in range(n):
+    for row in xrange(n):
         m.append([-1] + list(map(int, input().split())))
     # Identify Identity
-    ident = set(range(1, n + 1))
+    ident = set(xrange(1, n + 1))
     flag = True
     for i in range(1, n + 1):
         if not flag:
@@ -23,10 +26,10 @@ while True:
         continue
     ident = ident.pop()
     # Checking inverses
-    for i in range(1, n + 1):
+    for i in xrange(1, n + 1):
         if not flag:
             break
-        for j in range(1, n + 1):
+        for j in xrange(1, n + 1):
             if m[i][j] == ident:
                 break
         else:
@@ -35,13 +38,13 @@ while True:
         print("no")
         continue
     # Checking associativity
-    for i in range(1, n + 1):
+    for i in xrange(1, n + 1):
         if not flag:
             break
-        for j in range(i, n + 1):
+        for j in xrange(i, n + 1):
             if not flag:
                 break
-            for k in range(j, n + 1):
+            for k in xrange(j, n + 1):
                 if m[m[i][j]][k] != m[i][m[j][k]]:
                     flag = False
     if not flag:
