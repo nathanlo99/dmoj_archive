@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 combinations = []
 min_tickets = None
 
