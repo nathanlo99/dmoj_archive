@@ -1,9 +1,12 @@
+import sys
+input = sys.stdin.readline
+
 n = int(input())
 vets = []
-for i in range(n):
+for i in xrange(n):
     name, skill = input().split()
     vets.append((name, int(skill)))
-for i in range(int(input())):
+for i in xrange(int(input())):
     a, d = map(int, input().split())
     min_dist = 10000
     min_name = ""
