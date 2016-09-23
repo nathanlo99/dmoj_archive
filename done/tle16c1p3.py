@@ -1,7 +1,10 @@
-s = input()
+import sys
+input = sys.stdin.readline
+
+s = input().strip()
 atoms = []
 for ch in s:
-    if ch.isalpha():
+    if ch in "CHO":
         atoms.append((ch, 0))
     else:
         prev_atom, prev_amt = atoms.pop()
