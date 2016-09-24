@@ -1,22 +1,21 @@
 #include <stdio.h>
 
-#define scan(x) do{while((x=getchar_unlocked())<'0'); for(x-='0';'0'<=(_=getchar_unlocked()); x=(x<<3)+(x<<1)+_-'0');}while(0)
+#define scan(x) while((x=getchar_unlocked())<'0'); for(x-='0';'0'<=(_=getchar_unlocked()); x=(x<<3)+(x<<1)+_-'0');
 
 char _;
-int N, Q, masses[1000001], cumulative[1000001], C, current, A, B;
+int N, Q, cumulative[1000001], current, A, B, i;
 
 int main(){
 	scan(N);
-	for (int i = 0; i < N; i++){
+	while (N--) {
 		scan(current);
-		C += current;
-		cumulative[i + 1] = C;
+		cumulative[i + 1] = cumulative[i] + current;
+		i++;
 	}
 	scan(Q);
-	for (int i = 0; i < Q; i++){
+	while (Q--) {
 		scan(A);
 		scan(B);
 		printf("%d\n", cumulative[B + 1] - cumulative[A]);
 	}
-	return 0;
 }
