@@ -1,0 +1,1 @@
+print(sum((lambda x:(x//10)**(x%10))(input()) for i in range(input())))
