@@ -5,3 +5,4 @@ __pycache__
 auto_add
 *.swp
 .ropeproject/
+.DS_Store
