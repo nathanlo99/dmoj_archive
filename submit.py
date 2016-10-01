@@ -176,7 +176,7 @@ def submit(session, username, problem, source, language):
         print("\nCould not submit: Unknown error")
         sys.exit(5)
     print("\nSubmission succeeded #", submission_num, "\n")
-
+    print("Goto: ", response.url, " to view submission")
     submissions_url = "https://dmoj.ca/api/user/submissions/" + username
 
     response = session.get(submissions_url)
