@@ -5,7 +5,7 @@ input = sys.stdin.readline
 n, k, q = map(int, input().split())
 
 p_sum = [0]
-p_set = [[] for i in range(2001)]
+p_set = [[] for i in xrange(2001)]
 
 for i, num in enumerate(map(int, input().split())):
     p_sum.append(p_sum[-1] + num)
@@ -17,7 +17,7 @@ def find_ge(a, x):
         return 100000000
     return a[i]
 
-for _ in range(q):
+for _ in xrange(q):
     a, b, x, y = map(int, input().split())
     if p_sum[y] - p_sum[x - 1] > k:
         pa = p_set[a + 1000]

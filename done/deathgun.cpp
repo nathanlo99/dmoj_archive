@@ -27,7 +27,7 @@ int main() {
   }
 
   while (true) {
-    bool flag = false;
+    register bool flag = false;
     for (int i = 0; i < tot; i++) {
       if (in[i] == 0) {
         cout << name[i] << endl;

@@ -1,7 +1,10 @@
+import sys
+input = sys.stdin.readline
+
 n = int(input())
 x, y, z = sorted(map(int, input().split()))
 
-t = [0] + [-999999 for i in range(n)]
+t = [0] + [-999999 for i in xrange(n)]
 for i in range(n + 1):
     m = t[i]
     if i >= x:

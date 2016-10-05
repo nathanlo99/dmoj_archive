@@ -9,13 +9,11 @@ int main() {
         scanf("%d", &fav[i]);
     }
     std::sort(fav, fav + N);
-
     scanf("%d", &Q);
-    for (int i = 0; i < Q; i++) {
+    while (Q--) {
         scanf("%d", &num);
-        int lower = std::lower_bound(fav, fav + N, num) - fav;
-        int upper = std::upper_bound(fav, fav + N, fav[lower]) - fav;
-        printf("%d %d\n", fav[lower], upper - lower);
+        const register int* lower = std::lower_bound(fav, fav + N, num);
+        const register int* upper = std::upper_bound(fav, fav + N, *lower);
+        printf("%d %d\n", *lower, upper - lower);
     }
-    return 0;
 }

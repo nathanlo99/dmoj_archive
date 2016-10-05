@@ -1,38 +1,42 @@
-#include <cstdio>
-#include <vector>
-
+#include <bits/stdc++.h>
+#define endl '\n'
 using namespace std;
-int N, M, A, B, has_in[100000], has_out[100000];
-long long times[100000], path[100000];
-vector<int> adj[100000];
+using ll = long long;
 
+ll n, m, s, e, ans;
+vector<vector<ll>> g;
+vector<ll> indeg, outdeg;
+vector<pair<ll, ll>> nodes;
 int main() {
-  scanf("%d %d", &N, &M);
-  for (int i = 0; i < M; i++) {
-    scanf("%d %d", &A, &B);
-    adj[A - 1].push_back(B - 1);
-    has_in[B - 1] = 1;
-    has_out[A - 1] = 1;
-  }
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> n >> m;
+	g.resize(n + 1);
+	nodes.resize(n + 1);
+	indeg.resize(n + 1);
+	outdeg.resize(n + 1);
+	for (int i = 0; i < m; i++) {
+		cin >> s >> e;
+		g.at(s).push_back(e);
+		indeg.at(e)++;
+		outdeg.at(s)++;
+	}
+	for (int i = 1; i <= n; i++) {
+		if (indeg.at(i) == 0) {
+			nodes.at(i).second = 1;
+			nodes.at(i).first = 0;
+		}
+	}
+	for (int i = 1; i <= n; i++) {
+		for (const auto &a : g.at(i)) {
+			nodes.at(a).first = (nodes.at(a).first + nodes.at(i).first + nodes.at(i).second) % 1000000007;
+			nodes.at(a).second = (nodes.at(a).second + nodes.at(i).second) % 1000000007;
+		}
+	}
+	for (int i = 1; i <= n; i++) {
+		if (outdeg.at(i) == 0) {
+			ans = (ans + nodes.at(i).first) % 1000000007;
+		}
+	}
 
-  for (int i = 0; i < N; i++) {
-    if (!has_in[i]) {
-      times[i] = 0;
-      path[i] = 1;
-    }
-
-    for (int j = 0; j < adj[i].size(); j++) {
-      const int dest = adj[i][j];
-      times[dest] = (times[dest] + times[i] + path[i]) % 1000000007L;
-      path[dest] = (path[dest] + path[i]) % 1000000007L;
-    }
-  }
-
-  long long ans = 0;
-  for (int i = 0; i < N; i++) {
-    if (!has_out[i])
-      ans = (ans + times[i]) % 1000000007L;
-  }
-  printf("%lld\n", ans);
-  return 0;
+	cout << ans << endl;
 }

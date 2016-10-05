@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 def monkey(s):
     if a_word(s):
         return True
@@ -14,7 +17,7 @@ def a_word(s):
         return True
     return False
 
-s = input()
+s = input().strip()
 while s != "X":
     print("YES" if monkey(s) else "NO")
-    s = input()
+    s = input().strip()
