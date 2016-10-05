@@ -1,0 +1,1 @@
+print("\n".join(str(2 * int(input().split()[0]) - 1) for i in range(10)))
