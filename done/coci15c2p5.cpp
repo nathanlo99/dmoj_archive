@@ -8,7 +8,7 @@ long long psa[N], p, last = -10000000000, ans;
 std::pair<long long, int> lookup[N];
 
 void update(int idx, int num) {
-    while (idx <= num + 1) {
+    while (idx <= num) {
         bit[idx]++;
         idx += idx & -idx;
     }
