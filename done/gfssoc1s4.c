@@ -5,35 +5,33 @@ long long height[256][256][256], bit[256][256][256], ans;
 char opcode;
 
 void update(int x, int y, int z, int v) {
-    int xx = x;
-    while (xx <= 256) {
+    while (x <= 256) {
         register int yy = y;
         while (yy <= 256) {
             register int zz = z;
             while (zz <= 256) {
-                bit[xx][yy][zz] += v;
+                bit[x][yy][zz] += v;
                 zz += zz & -zz;
             }
             yy += yy & -yy;
         }
-        xx += xx & -xx;
+        x += x & -x;
     }
 }
 
 long long query(int x, int y, int z) {
     register long long res = 0;
-    register int xx = x;
-    while (xx > 0) {
+    while (x) {
         register int yy = y;
-        while (yy > 0) {
+        while (yy) {
             register int zz = z;
-            while (zz > 0) {
-                res += bit[xx][yy][zz];
+            while (zz) {
+                res += bit[x][yy][zz];
                 zz -= zz & -zz;
             }
             yy -= yy & -yy;
         }
-        xx -= xx & -xx;
+        x -= x & -x;
     }
     return res;
 }
