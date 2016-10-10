@@ -1,15 +1,18 @@
+import sys
+input = sys.stdin.readline
+
 n, m = map(int, input().split())
 graph = {}
-for _ in range(m):
+for _ in xrange(m):
     a, b = map(int, input().split())
     graph[a] = graph.get(a, []) + [b]
     graph[b] = graph.get(b, []) + [a]
 w = int(input())
 ants = []
-for i in range(w):
+for i in xrange(w):
     ants.append(int(input()))
 
-distance_to_ants = [100000 for i in range(n + 1)]
+distance_to_ants = [100000 for i in xrange(n + 1)]
 for ant in ants:
     distance = {ant: 0}
     q = [ant]
@@ -37,6 +40,7 @@ while q:
         distance[neighbour] = distance[node] + 1
         q.append(neighbour)
 ans = distance.get(n, "sacrifice bobhob314")
+
 if ans == 8:
     print("sacrifice bobhob314")
 else:
