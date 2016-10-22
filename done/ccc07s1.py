@@ -1,3 +1,1 @@
-for _ in range(int(input())):
-	y, m, d = map(int, input().split())
-	print ("Yes" if y * 10000 + m * 100 + d <= 19890227 else "No")
+for _ in range(int(input())): print("Yes" if sum(int(x) * 100 ** (2 - i) for i, x in enumerate(input().split())) <= 19890227 else "No")

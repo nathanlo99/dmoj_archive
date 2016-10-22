@@ -1,8 +1,9 @@
 from math import sin, cos, sqrt
+from sys import stdin
 
-n = int(input())
-for _ in range(n):
-    x, y, z, u, v, w, t = map(float, input().split())
+n = int(stdin.readline())
+for _ in xrange(n):
+    x, y, z, u, v, w, t = map(float, stdin.readline().split())
     d = u * u + v * v + w * w
     k = (u * x + v * y + w * z) * (1 - cos(t))
     fx = (u * k + d * x * cos(t) + sqrt(d) * (-w * y + v * z) * sin(t)) / d
