@@ -1,36 +1,37 @@
 #include <stdio.h>
+#define getchar() (*_pinp?*_pinp++:(_inp[fread(_pinp=_inp, 1, 4096, stdin)]='\0', *_pinp++))
+#define scan(x) do{while((x=getchar())<'-'); _ssign=x=='-'; if(_ssign) while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0'); x=_ssign?-x:x;}while(0)
 
-unsigned int bit[1050][1050];
+char _inp[4097], *_pinp=_inp, _;
+int _ssign;
 
-int opcode, s, t1, t2, t3, t4;
+int d, s, x, y, a, l, b, r, t, bit[1025][1025];
 
-void update(int x, int y, int a) {
-    for (int xx = x; xx <= s; xx += xx & -xx)
-        for (int yy = y; yy <= s; yy += yy & -yy)
-            bit[xx][yy] += a;
-}
-
-unsigned long long query(int x, int y) {
-    x++; y++;
-    unsigned long long ans = 0;
-    for (int xx = x; xx > 0; xx -= xx & -xx) 
+inline int query(int x, int y) {
+    register int res = 0;
+    for (int xx = x; xx > 0; xx -= xx & -xx)
         for (int yy = y; yy > 0; yy -= yy & -yy)
-            ans += bit[xx][yy];
-    return ans;
+            res += bit[xx][yy];
+    return res;
 }
 
 int main() {
-    scanf("%d %d", &opcode, &s);
-    while (1) {
-        scanf("%d", &opcode);
-        if (opcode == 1) {
-            scanf("%d %d %d", &t1, &t2, &t3);
-            update(t1 + 1, t2 + 1, t3);
-        } else if (opcode == 2) {
-            scanf("%d %d %d %d", &t1, &t2, &t3, &t4);
-            printf("%lld\n", query(t3, t4) - query(t1 - 1, t4) - query(t3, t2 - 1) + query(t1 - 1, t2 - 1));
-        } else {
-            break;
+    scan(d); scan(s);
+    for (;;) {
+        scan(d);
+        switch (d) {
+            case 1:
+                scan(x); scan(y); scan(a);
+                for (int xx = x + 1; xx <= s; xx += xx & -xx) 
+                    for (int yy = y + 1; yy <= s; yy += yy & -yy)
+                        bit[xx][yy] += a;
+                break;
+            case 2:
+                scan(l); scan(b); scan(r); scan(t);
+                printf("%d\n", query(r + 1, t + 1) - query(l, t + 1) - query(r + 1, b) + query(l, b));
+                break;
+            case 3:
+                return 0;
         }
     }
 }

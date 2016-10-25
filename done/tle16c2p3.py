@@ -1,19 +1,15 @@
 import sys
 input = sys.stdin.readline
 
-
-def sieve(n):
-    sieve = [True] * n
-    for i in range(3, int(n ** 0.5) + 1, 2):
-        if sieve[i]:
-            sieve[i * i::2 * i] = [False] * ((n - i * i - 1) // (2 * i) + 1)
-    return [2] + [i for i in range(3, n, 2) if sieve[i]]
-
-primes = sieve(1000000)
+primes = [True] * 1000000
+for i in xrange(3, 1001, 2):
+    if primes[i]:
+        primes[i * i::2 * i] = [False] * ((1000000 - i * i - 1) // (2 * i) + 1)
+primes = [2] + [i for i in xrange(3, 1000000, 2) if primes[i]]
 
 n, c = map(int, input().split())
 cut_primes = set()
-for i in range(c):
+for i in xrange(c):
     t = int(input())
     pi = 0
     for prime in primes:
@@ -23,8 +19,7 @@ for i in range(c):
             t //= prime
             cut_primes.add(prime)
 
-# print(cut_primes)
-for i in range(n):
+for i in xrange(n):
     t = int(input())
     pi = 0
     for prime in cut_primes:
