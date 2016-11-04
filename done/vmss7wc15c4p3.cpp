@@ -3,8 +3,8 @@
 #include <vector>
 #include <tuple>
 
-int n, m, a, b, t, dist[100000], dist2[100000], vis[100000], vis2[100000];
-std::vector<std::pair<int, int> > adj[100000];
+int n, m, a, b, t, dist[100000], dist2[100000], vis[100000], vis2[100000], cur_index, cur_dist, ans;
+std::vector< std::pair<int, int> > adj[100000];
 std::priority_queue<std::pair<int, int> > q;
 
 int main() {
@@ -22,14 +22,13 @@ int main() {
         q.push(std::make_pair(-dist[i], i));
     }
     
-    int cur_index, cur_dist;
     while (!q.empty()) {
         std::tie(cur_dist, cur_index) = q.top(); q.pop();
         cur_dist *= -1;
         vis[cur_index] = 1;
         for (std::pair<int, int> p : adj[cur_index]) {
             if (!vis[p.first]) {
-                int alt = cur_dist + p.second;
+                const int alt = cur_dist + p.second;
                 if (alt < dist[p.first]) {
                     dist[p.first] = alt;
                     q.push(std::make_pair(-alt, p.first));
@@ -51,7 +50,7 @@ int main() {
         vis2[cur_index] = 1;
         for (std::pair<int, int> p : adj[cur_index]) {
             if (!vis2[p.first]) {
-                int alt = cur_dist + p.second;
+                const int alt = cur_dist + p.second;
                 if (alt < dist2[p.first]) {
                     dist2[p.first] = alt;
                     q.push(std::make_pair(-alt, p.first));
@@ -60,7 +59,6 @@ int main() {
         }
     }
     
-    int ans = 0;
     for (int i = 0; i < n; i++) {
         ans = std::max(ans, dist[i] + dist2[i]);
     }

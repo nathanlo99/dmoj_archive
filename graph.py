@@ -35,12 +35,17 @@ def main():
         total_points = 0
         data_x = []
         data_y = []
+        i = 1
+        ppp_y = []
         for submission_number, points_earned in sorted(best_submission.values()):
             total_points += points_earned
+            ppp_y.append(total_points / i)
+            i += 1
             data_x.append(submission_number)
             data_y.append(total_points)
         print("Total points for '{}': {}".format(user, total_points))
-        plt.plot(data_x, data_y, label=user)
+        # plt.plot(data_x, data_y, label=user)
+        plt.plot(data_x, ppp_y, label=user + "PPP")
 
     # BIG TODO:
     # Once DMOJ's API makes finding out the date a submission was submitted, I will
