@@ -1,147 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct { int l, r, gcd, min, num_gcd; } node;
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define p1 (2 * i + 1)
+#define p2 (2 * i + 2)
 
-inline int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
-inline int min(int a, int b) { return a > b ? b : a; }
+typedef struct {
+    int l, r, gcd, min, num_gcd;
+} node;
+
+static inline int gcd(int a, int b) { return b == 0 ? a : gcd(b, a % b); }
 
 int n, m, a, b;
-node segment_tree[100000 * 3];
+char c;
+node s[300001];
 
-void push_up(int i) {
-  segment_tree[i].gcd =
-      gcd(segment_tree[2 * i + 1].gcd, segment_tree[2 * i + 2].gcd);
-  segment_tree[i].min =
-      min(segment_tree[2 * i + 1].min, segment_tree[2 * i + 2].min);
-  int gcd1 = segment_tree[2 * i + 1].gcd;
-  int gcd2 = segment_tree[2 * i + 2].gcd;
-  segment_tree[i].num_gcd = 0;
-  if (segment_tree[i].gcd == gcd1) {
-    segment_tree[i].num_gcd += segment_tree[2 * i + 1].num_gcd;
-  }
-  if (segment_tree[i].gcd == gcd2) {
-    segment_tree[i].num_gcd += segment_tree[2 * i + 2].num_gcd;
-  }
+static inline void push_up(const int i) {
+    s[i].gcd = gcd(s[p1].gcd, s[p2].gcd);
+    s[i].min = min(s[p1].min, s[p2].min);
+    s[i].num_gcd = 0;
+    if (s[i].gcd == s[p1].gcd) s[i].num_gcd += s[p1].num_gcd;
+    if (s[i].gcd == s[p2].gcd) s[i].num_gcd += s[p2].num_gcd;
 }
 
-void change(int i, int index, int value) {
-    int l = segment_tree[index].l;
-    int r = segment_tree[index].r;
-    if (l == r && l == i) {
-        segment_tree[index].min = value;
-        segment_tree[index].gcd = value;
-        segment_tree[index].num_gcd = 1;
+static inline void change(const int i, const int index, const int value) {
+    if (s[index].l == s[index].r && s[index].l == i) {
+        s[index].min = s[index].gcd = value;
+        s[index].num_gcd = 1;
         return;
     }
-    int mid = (l + r) / 2;
-    if (l <= i && i <= mid) {
-        change(i, 2 * index + 1, value);
-    } else {
-        change(i, 2 * index + 2, value);
-    }
+    const int mid = (s[index].l + s[index].r) / 2;
+    if (s[index].l <= i && i <= mid) change(i, 2 * index + 1, value);
+    else change(i, 2 * index + 2, value);
     push_up(index);
 }
 
-void C(int i, int value) {
-    change(i, 0, value);
+static inline int query_min(const int range_l, const int range_r, const int i) {
+    if (range_l > s[i].r || range_r < s[i].l) return 0x3f3f3f3f;
+    if (s[i].l >= range_l && s[i].r <= range_r) return s[i].min;
+    return min(query_min(range_l, range_r, p1), query_min(range_l, range_r, p2));
 }
 
-void print() {
-    int i = 0, c = 0;
-    for (;;i++){
-        printf("#%d: %d -> %d: min: %d, gcd: %d, num: %d\n", i, segment_tree[i].l, segment_tree[i].r, segment_tree[i].min, segment_tree[i].gcd, segment_tree[i].num_gcd);
-        if (segment_tree[i].l == segment_tree[i].r) c++;
-        if (c == n) break;
-    }
+static inline int query_gcd(const int range_l, const int range_r, const int i) {
+    if (range_l > s[i].r || range_r < s[i].l) return 0;
+    if (s[i].l >= range_l && s[i].r <= range_r) return s[i].gcd;
+    return gcd(query_gcd(range_l, range_r, p1), query_gcd(range_l, range_r, p2));
 }
 
-int query_min(int range_l, int range_r, int i) {
-    // No overlap: return 0x3f3f3f3f
-    // Total overlap: return segment_tree[i].min
-    // Partial overlap: return min(first_half, second_half);
-    int l = segment_tree[i].l;
-    int r = segment_tree[i].r;
-    if (range_l > r || range_r < l) {
-        return 0x3f3f3f3f;
-    }
-    if (l >= range_l && r <= range_r) {
-        return segment_tree[i].min;
-    }
-    int first_half = query_min(range_l, range_r, 2 * i + 1);
-    int second_half = query_min(range_l, range_r, 2 * i + 2);
-    return min(first_half, second_half);
-}
-
-int query_gcd(int range_l, int range_r, int i) {
-    int l = segment_tree[i].l;
-    int r = segment_tree[i].r;
-    if (range_l > r || range_r < l) {
-        return 0;
-    }
-    if (l >= range_l && r <= range_r) {
-        return segment_tree[i].gcd;
-    }
-    int first_half = query_gcd(range_l, range_r, 2 * i + 1);
-    int second_half = query_gcd(range_l, range_r, 2 * i + 2);
-    return gcd(first_half, second_half);
-}
-
-int query_num(int range_l, int range_r, int i) {
-    int l = segment_tree[i].l;
-    int r = segment_tree[i].r;
-    if (range_l > r || range_r < l) {
-        return 0;
-    }
-    if (l >= range_l && r <= range_r) {
-        return segment_tree[i].num_gcd;
-    }
-    int first_half = query_gcd(range_l, range_r, 2 * i + 1);
-    int second_half = query_gcd(range_l, range_r, 2 * i + 2);
-    int first_num = query_num(range_l, range_r, 2 * i + 1);
-    int second_num = query_num(range_l, range_r, 2 * i + 2);
-    int total_gcd = gcd(first_half, second_half);
+static inline int query_num(const int range_l, const int range_r, const int i) {
+    if (range_l > s[i].r || range_r < s[i].l) return 0;
+    if (s[i].l >= range_l && s[i].r <= range_r) return s[i].num_gcd;
+    const int first_half = query_gcd(range_l, range_r, p1);
+    const int second_half = query_gcd(range_l, range_r, p2);
+    const int total_gcd = gcd(first_half, second_half);
     int count = 0;
-    if (total_gcd == first_half) count += first_num;
-    if (total_gcd == second_half) count += second_num;
+    if (total_gcd == first_half) count += query_num(range_l, range_r, p1);
+    if (total_gcd == second_half) count += query_num(range_l, range_r, p2);
     return count;
 }
 
-void init(int l, int r, int i) {
-  segment_tree[i].l = l;
-  segment_tree[i].r = r;
-  if (l != r) {
-    int mid = (l + r) / 2;
-    init(l, mid, 2 * i + 1);
-    init(mid + 1, r, 2 * i + 2);
+static void init(const int l, const int r, const int i) {
+    s[i].l = l; s[i].r = r;
+    if (l == r) { scanf("%d", &a); s[i].gcd = s[i].min = a; s[i].num_gcd = 1; return; }
+    const int mid = (l + r) / 2;
+    init(l, mid, p1); init(mid + 1, r, p2);
     push_up(i);
-  } else {
-    scanf("%d", &a);
-    segment_tree[i].gcd = a;
-    segment_tree[i].min = a;
-    segment_tree[i].num_gcd = 1;
-  }
 }
 
 int main() {
-  scanf("%d %d", &n, &m);
-  init(1, n, 0);
-  getchar();
-  char command;
-
-  for (int i = 0; i < m; i++) {
-    command = getchar();
-    scanf("%d %d", &a, &b);
+    scanf("%d %d", &n, &m);
+    init(1, n, 0);
     getchar();
-    if (command == 'C') {
-        C(a, b);
-    } else if (command == 'M') {
-        printf("%d\n", query_min(a, b, 0));
-    } else if (command == 'G') {
-        printf("%d\n", query_gcd(a, b, 0));
-    } else if (command == 'Q') {
-        printf("%d\n", query_num(a, b, 0));
+
+    while (m--) {
+        c = getchar();
+        scanf("%d %d", &a, &b);
+        getchar();
+        if (c == 'C') change(a, 0, b);
+        else if (c == 'M') printf("%d\n", query_min(a, b, 0));
+        else if (c == 'G') printf("%d\n", query_gcd(a, b, 0));
+        else if (c == 'Q') printf("%d\n", query_num(a, b, 0));
     }
-  }
-  return 0;
 }
