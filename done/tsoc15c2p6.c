@@ -11,8 +11,7 @@ int n, q, c, r, a, b;
 node seg[90000];
 
 void pushdown(int rt) {
-    if (seg[rt].l == seg[rt].r) return;
-    if (seg[rt].lazy == 0) return;
+    if (seg[rt].l == seg[rt].r || seg[rt].lazy == 0) return;
     seg[2 * rt].lazy += seg[rt].lazy;
     seg[2 * rt].min = max(0, seg[2 * rt].min - seg[rt].lazy);
     seg[2 * rt + 1].lazy += seg[rt].lazy;
