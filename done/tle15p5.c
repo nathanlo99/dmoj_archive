@@ -1,6 +1,6 @@
 #include "stdio.h"
 #define mod 1000000007
-#define pow pow_
+//#define pow pow_
 
 long long N, A[2001], M, P[2001];
 
