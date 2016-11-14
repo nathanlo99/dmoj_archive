@@ -1,48 +1,34 @@
 #include <cstdio>
 #include <algorithm>
 
-#define MAX 100005
-int n, num, grid[MAX];
-long long ans, bit[MAX];
-std::pair<int, int> scores[MAX];
+int n, num, grid[100005];
+long long ans, bit[100005];
+std::pair<int, int> scores[100005];
 
-inline void update(int idx) {
-    for (int i = idx; i <= MAX; i += i & -i) {
-        bit[i]++;
-    }
-}
-
-inline long long query(int idx) {
-    long long res = 0;
-    for (; idx > 0; idx -= idx & -idx) {
-        res += bit[idx];
-    }
-    return res;
+inline int readint() {
+    int c, o = 0;
+    while ((c = getchar_unlocked()) > '9' || c < '0');
+    do {
+        o = (o << 3) + (o << 1) + c - '0';
+    } while ((c = getchar_unlocked()) <= '9' && c >= '0');
+    return o;
 }
 
 int main() {
-    scanf("%d", &n);
+    n = readint();
     for (int i = 0; i < n; i++) {
-        scanf("%d", &grid[i]);
+        grid[i] = readint();
         scores[i] = std::make_pair(grid[i], i + 1);
     }
     std::sort(scores, scores + n);
     
-    // int largest = 0;
-    // int largest_value = 0;
-    for (int i = 0; i < n; i++) {
-        // if (scores[i].first > largest_value) {
-        //     largest++;
-        //     largest_value = scores[i].first;
-        // }
-        grid[scores[i].second] = n - i;
-    }
+    for (int i = 0; i < n; i++) grid[scores[i].second] = n - i;
 
     ans = 0;
-    update(1);
+    for (int j = 1; j <= 100005; j += j & -j) bit[j]++;
     for (int i = 1; i <= n; i++) {
-        ans += query(grid[i]);
-        update(grid[i]);
+        for (int j = grid[i]; j > 0; j -= j & -j) ans += bit[j];
+        for (int j = grid[i]; j <= 100005; j += j & -j) bit[j]++;
     }
     printf("%.2lf\n", double(ans) / double(n));
 }
