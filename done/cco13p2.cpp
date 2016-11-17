@@ -1,0 +1,3 @@
+#include <stdio.h>
+int skills[(1<<20)+1],tourney[(1<<21)+1],n,m,t1,t2,c;
+int main(){scanf("%d%d",&n,&m);for (int i=0; i<(1<<n); i++) {scanf("%d",skills+i+1);tourney[(1<<n)+i]=i+1;}for (int i=(1<<n)-1; i; i--) tourney[i]=(skills[tourney[i<<1]]>skills[tourney[(i<<1)+1]]?tourney[i<<1]:tourney[(i<<1)+1]);tourney[0]=0;while (m--) {scanf(" %c",&c);if(c=='R'){scanf("%d%d",&t1,&t2);skills[t1]=t2;for (int i=(t1+(1<<n)-1)>>1; i;i>>=1) tourney[i]=(skills[tourney[i<<1]]>skills[tourney[(i<<1)+1]]?tourney[i<<1]:tourney[2*i+1]);}else if(c=='S'){scanf("%d",&t1);t1+=(1<<n)-1;t2=0;while(tourney[t1]==tourney[t1>>1]){t1>>=1;++t2;}printf("%d\n",t2);}else printf("%d\n",tourney[1]);}}
