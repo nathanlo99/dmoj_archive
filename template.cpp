@@ -1,5 +1,9 @@
-#define getchar() (*_pinp?*_pinp++:(_inp[fread(_pinp=_inp, 1, 4096, stdin)]='\0', *_pinp++))
-#define scan(x) do{while((x=getchar())<'-'); _ssign=x=='-'; if(_ssign) while((x=getchar())<'0'); for(x-='0'; '0'<=(_=getchar()); x=(x<<3)+(x<<1)+_-'0'); x=_ssign?-x:x;}while(0)
+#define getchar() (*_p?*_p++:(_i[fread(_p=_i,1,4096,stdin)]=0,*_p++))
+#define scan(x) do{while((x=getchar())<'-');_s=x=='-';if(_s) while((x=getchar())<'0');for(x-='0';'0'<=(_=getchar());x=(x<<3)+(x<<1)+_-'0');x=_s?-x:x;}while(0)
 
-char _inp[4097], *_pinp=_inp, _;
-int _ssign;
+char _i[4097], *_p=_i, _;
+int _s;
+
+int main() {
+    // Code
+}
