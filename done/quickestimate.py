@@ -1,2 +1,1 @@
-for i in range(int(input())):
-    print(len(input().strip()))
+print("\n".join(str(len(input().strip())) for i in range(int(input()))))
