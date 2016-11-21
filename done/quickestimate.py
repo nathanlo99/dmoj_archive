@@ -1,1 +1,0 @@
-print("\n".join(str(len(input().strip())) for i in range(int(input()))))
