@@ -31,6 +31,8 @@ def try_login(username, password, quiet=False):
     session = requests.Session()
     # Fetches the csrftoken from dmoj.ca
     session.get("https://dmoj.ca")
+    if "csrftoken" not in session.cookies:
+        raise Exception("Login failed: Could not fetch csrf token")
     payload = {
         "username": username,
         "password": password,
