@@ -1,7 +1,7 @@
 n = int(input())
 d = [int(input()) for _ in range(n)]
 
-dp = [x for x in d]
+dp = d[:]
 
 for i in range(1, n):
     for j in range(0, i):
