@@ -5,10 +5,7 @@ def fib(n):
   if not n: return (0, 1)
   else:
     a, b = fib(n // 2)
-    e = a * a
-    c = 2 * b * a - e
-    d = e + b * b
-    if not n & 1: return (c % 1000000007, d % 1000000007)
-    else: return (d % 1000000007, (c + d) % 1000000007)
+    if not n & 1: return ((2 * b * a - a * a) % 1000000007, (a * a + b * b) % 1000000007)
+    else: return ((a * a + b * b) % 1000000007, (2 * b * a + b * b) % 1000000007)
 
 print(fib(int(input()))[0])
