@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 flooring = int(input())
 R = int(input())
 C = int(input())
