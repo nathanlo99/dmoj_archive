@@ -1,12 +1,24 @@
 #include <stdio.h>
 
+// Thanks quantum
+#define getchar() (*_pbuf ? *_pbuf++ : (_buf[fread_unlocked(_pbuf = _buf, 1, 16384, stdin)] = 0, *_pbuf++))
+char _buf[16385], *_pbuf = _buf;
+
+int read() {
+    int c, o = 0;
+    while ((c = getchar()) < '0');
+    do o = o*10 + c - '0';
+    while ((c = getchar()) >= '0');
+    return o;
+}
+
 char d[10002][10002];
 int n, m, x, y, w, h, ans;
 
 int main() {
-    scanf("%d %d", &n, &m);
+    n = read(); m = read();
     while (m--) {
-        scanf("%d %d %d %d", &x, &y, &w, &h);
+        x = read(); y = read(); w = read(); h = read();
         d[x + w + 1][y + h + 1]++; d[x + 1][y + 1]++;
         d[x + w + 1][y + 1]--; d[x + 1][y + h + 1]--;
     }
