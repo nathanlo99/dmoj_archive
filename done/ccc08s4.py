@@ -16,7 +16,9 @@ def solve_2(a, b):
     return res
 
 def solve_3(a, b, c):
-    return solve_2(solve_2(a, b), c) + solve_2(solve_2(b, c), a) + solve_2(solve_2(c, a), b)
+    return solve_2(solve_2(a, b), c) + \
+           solve_2(solve_2(b, c), a) + \
+           solve_2(solve_2(c, a), b)
 
 def solve_4(a, b, c, d):
     return solve_2(solve_3(a, b, c), d) + \
