@@ -1,0 +1,13 @@
+#include <stdio.h>
+int n, c, dp[1000001];
+
+int main() {
+    scanf("%d %d", &c, &n);
+    for (int i = 0, a; i < n; i++) {
+        scanf("%d", &a);
+        for (int j = c; j >= a; j--) {
+            if (dp[j - a] + a > dp[j]) dp[j] = dp[j - a] + a;
+        }
+    }
+    printf("%d", dp[c - 1]);
+}
