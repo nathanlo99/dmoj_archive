@@ -47,7 +47,7 @@ def try_login(username, password, quiet=False):
     return (session, response.text.find("login") == -1)
 
 
-def login(quiet=False):
+def login(secure=True, quiet=False):
     # Get credentials, either from cache or from user
     if os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
@@ -56,6 +56,9 @@ def login(quiet=False):
     else:
         username = input(" -> Username: ")
         password = getpass.getpass(" -> Password: ")
+
+    if not secure:
+        return username, None
 
     session, login_successful = try_login(username, password, quiet=quiet)
     while not login_successful:
@@ -117,10 +120,11 @@ def main():
         working_files = []
         working = []
 
-    username, session = login()
+    username, session = login(secure=False)
 
     # Gets all submissions by the user
-    subs = requests.get("https://dmoj.ca/api/user/submissions/" + username).json()
+    page = requests.get("https://dmoj.ca/api/user/submissions/" + username)
+    subs = page.json()
     sub_info = {}
     submission_nums = {}
 
@@ -188,7 +192,7 @@ def main():
     print()
 
     # Closes the session
-    session.close()
+    if session: session.close()
 
 if __name__ == "__main__":
     main()
