@@ -81,10 +81,14 @@ def extract_src(session, file_name, submission_num):
     Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
     """
     # Gets the HTML page for the submission page
-    response = session.get("https://dmoj.ca/src/" + submission_num + "/raw")
+    url = "https://dmoj.ca/src/" + submission_num + "/raw"
+    if session:
+        response = session.get(url).text
+    else:
+        print("Please go to " + url + " and copy and paste the entire file")
+        response = input()
     with open(file_name, "w") as f:
-        f.write(response.text)
-
+        f.write(response)
 
 def main():
 
@@ -123,8 +127,13 @@ def main():
     username, session = login(secure=False)
 
     # Gets all submissions by the user
-    page = requests.get("https://dmoj.ca/api/user/submissions/" + username)
-    subs = page.json()
+    url = "https://dmoj.ca/api/user/submissions/" + username
+    page = requests.get(url)
+    try:
+        subs = page.json()
+    except e:
+        print("An error occured while parsing your submissions")
+        subs = input("Please go to " + url + " and copy and paste the entire page")
     sub_info = {}
     submission_nums = {}
 
@@ -169,7 +178,6 @@ def main():
     for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
-
             os.remove(os.path.join("working", working_files[number]))
             c += 1
     print(" -> {} files removed from 'working/'".format(c))
