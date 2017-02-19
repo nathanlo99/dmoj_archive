@@ -4,6 +4,7 @@ import getpass     # Gets the password securely
 import base64      # To 'encode' the DMOJ credentials
 import os          # To inspect the file system
 import os.path     # For 'isfile' and 'join' methods
+import json
 
 # The extensions for each source langauge, used when extracting the source into a file
 # INCOMPLETE
@@ -85,8 +86,9 @@ def extract_src(session, file_name, submission_num):
     if session:
         response = session.get(url).text
     else:
-        print("Please go to " + url + " and copy and paste the entire file")
-        response = input()
+        print("Please go to " + url + " and copy and paste the entire file and run the following command")
+        print("\n pbpaste > done/" + file_name)
+        return
     with open(file_name, "w") as f:
         f.write(response)
 
@@ -131,9 +133,10 @@ def main():
     page = requests.get(url)
     try:
         subs = page.json()
-    except e:
+    except Exception as e:
         print("An error occured while parsing your submissions")
-        subs = input("Please go to " + url + " and copy and paste the entire page")
+        subs = input("Please go to " + url + " and copy and paste the entire page\n")
+        subs = json.loads(subs)
     sub_info = {}
     submission_nums = {}
 
