@@ -4,7 +4,6 @@ import getpass     # Gets the password securely
 import base64      # To 'encode' the DMOJ credentials
 import os          # To inspect the file system
 import os.path     # For 'isfile' and 'join' methods
-import json
 
 # The extensions for each source langauge, used when extracting the source into a file
 # INCOMPLETE
@@ -48,7 +47,7 @@ def try_login(username, password, quiet=False):
     return (session, response.text.find("login") == -1)
 
 
-def login(secure=True, quiet=False):
+def login(quiet=False):
     # Get credentials, either from cache or from user
     if os.path.isfile(".dmoj_creds"):
         with open(".dmoj_creds", "r") as f:
@@ -57,9 +56,6 @@ def login(secure=True, quiet=False):
     else:
         username = input(" -> Username: ")
         password = getpass.getpass(" -> Password: ")
-
-    if not secure:
-        return username, None
 
     session, login_successful = try_login(username, password, quiet=quiet)
     while not login_successful:
@@ -82,15 +78,10 @@ def extract_src(session, file_name, submission_num):
     Fetchs the source from submission #(submission_num) and dumps it into file (file_name)
     """
     # Gets the HTML page for the submission page
-    url = "https://dmoj.ca/src/" + submission_num + "/raw"
-    if session:
-        response = session.get(url).text
-    else:
-        print("Please go to " + url + " and copy and paste the entire file and run the following command")
-        print("\n pbpaste > done/" + file_name)
-        return
+    response = session.get("https://dmoj.ca/src/" + submission_num + "/raw")
     with open(file_name, "w") as f:
-        f.write(response)
+        f.write(response.text)
+
 
 def main():
 
@@ -126,17 +117,10 @@ def main():
         working_files = []
         working = []
 
-    username, session = login(secure=False)
+    username, session = login()
 
     # Gets all submissions by the user
-    url = "https://dmoj.ca/api/user/submissions/" + username
-    page = requests.get(url)
-    try:
-        subs = page.json()
-    except Exception as e:
-        print("An error occured while parsing your submissions")
-        subs = input("Please go to " + url + " and copy and paste the entire page\n")
-        subs = json.loads(subs)
+    subs = requests.get("https://dmoj.ca/api/user/submissions/" + username).json()
     sub_info = {}
     submission_nums = {}
 
@@ -181,6 +165,7 @@ def main():
     for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
+
             os.remove(os.path.join("working", working_files[number]))
             c += 1
     print(" -> {} files removed from 'working/'".format(c))
@@ -203,7 +188,7 @@ def main():
     print()
 
     # Closes the session
-    if session: session.close()
+    session.close()
 
 if __name__ == "__main__":
     main()
