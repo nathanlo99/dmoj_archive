@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <queue>
 #include <tuple>
+#include <cstring>
 
 int t, l, w, cx, cy, nx, ny, sx, sy, tx, ty, dist[51][51], vis[51][51];
 char grid[51][51];
@@ -10,7 +11,6 @@ std::queue <std::pair<int, int> > q;
 int main() {
     scanf("%d", &t);
     for (int _ = 0; _ < t; _++) {
-        // INPUT
         scanf("%d %d", &l, &w);
         for (int i = 0; i < w; i++) {
             scanf("%s", grid[i]);
@@ -27,14 +27,8 @@ int main() {
             }
         }
         
-        // BFS
         while (!q.empty()) q.pop();
-        for (int i = 0; i < 51; i++) {
-            for (int j = 0; j < 51; j++) {
-                dist[i][j] = 0;
-                vis[i][j] = 0;
-            }
-        }
+        memset(dist, 0, sizeof(dist)), memset(vis, 0, sizeof(vis));
         
         q.push(std::make_pair(sx, sy));
         dist[sy][sx] = 0;
@@ -43,9 +37,7 @@ int main() {
         while (!q.empty()) {
             std::tie(cx, cy) = q.front();
             q.pop();
-            if (dist[cy][cx] == 62) {
-                break;
-            }
+            if (dist[cy][cx] == 61) break;
             for (auto xy: {std::make_pair(cx - 1, cy), std::make_pair(cx + 1, cy),
                            std::make_pair(cx, cy - 1), std::make_pair(cx, cy + 1)} ) {
                 std::tie(nx, ny) = xy;
