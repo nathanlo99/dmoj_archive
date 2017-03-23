@@ -1,4 +1,4 @@
-#! /usr/local/bin/pypy3
+#! /usr/local/bin/python3
 import sys
 import dmoj
 
