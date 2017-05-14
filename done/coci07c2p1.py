@@ -1,1 +1,0 @@
-print(" ".join(str(b - a) for a, b in zip(map(int, input().split()), [1, 1, 2, 2, 2, 8])))
