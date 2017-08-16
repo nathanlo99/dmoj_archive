@@ -6,6 +6,8 @@ long long last[10005], cur[10005];
 
 void do_case(){
     scanf("%d",&n);
+    memset(last, 0, sizeof(last));
+    memset(cur, 0, sizeof(cur));
     n--;
     last[0]=cur[0]=1;
     for (int i=1; i<=n; i++) {
