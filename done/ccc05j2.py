@@ -1,1 +1,0 @@
-print((lambda _, __: ("The number of RSA numbers between {} and {} is {}".format(_, __, sum(1 for i in xrange(_, __ + 1) if sum(1 for x in xrange(1, i + 1) if i % x == 0) == 4))))(int(raw_input()), int(raw_input())))

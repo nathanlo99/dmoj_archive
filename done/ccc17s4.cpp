@@ -33,8 +33,12 @@ int main() {
             r[ar] = br;
             count++;
             max_cost = cost;
-            last_old = !new_;
-            if (new_) change_count++;
+            if (new_) {
+                last_old = false;
+                change_count++;
+            } else {
+                last_old = true;
+            }
         }
         if (count == n - 1) break;
     }
@@ -46,10 +50,12 @@ int main() {
         std::tie(cost, new_, from, to) = q[i];
         const int ar = find_root(from), br = find_root(to);
         if (ar != br) {
-            if (cost < max_cost || (cost == max_cost && !new_)) r[ar] = br;
+            if (cost < max_cost || (cost == max_cost && !new_)) {
+                r[ar] = br;
+            }
             else if (!new_ && cost <= d) {
-                change_count--;
-                break;
+                printf("%lld\n", change_count - 1);
+                return 0;
             }
         }
     }

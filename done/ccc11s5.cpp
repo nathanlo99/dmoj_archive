@@ -26,29 +26,16 @@ int main() {
     while (!q.empty()) {
         const int node = q.front(); q.pop();
         for (int i = 0; i < n; i++) {
-            int next = node;
+            int next = node, count;
             if (!bitset(next, i)) {
-                // printf("Turn on light #%d in %d\n", i, next);
                 setbit(next, i);
-                // Try turning it on and seeing what happens
-                int count = 0;
-                for (int j = 1; i + j < n && bitset(next, i + j); j++) {
-                    count++;
-                }
-                for (int j = 1; i - j >= 0 && bitset(next, i - j); j++) {
-                    count++;
-                }
+                count = 0;
+                for (int j = 1; i + j < n && bitset(next, i + j); j++) count++;
+                for (int j = 1; i - j >= 0 && bitset(next, i - j); j++) count++;
                 if (count >= 3) {
-                    // printf("Count is %d\n", count);
-                    // printf("Number is %d\n", next);
                     setbit(next, i);
-                    for (int j = 1; i + j < n && bitset(next, i + j); j++) {
-                        setbit(next, i + j);
-                    }
-                    for (int j = 1; i - j >= 0 && bitset(next, i - j); j++) {
-                        setbit(next, i - j);
-                    }
-                    // printf("Number is now %d\n", next);
+                    for (int j = 1; i + j < n && bitset(next, i + j); j++) setbit(next, i + j);
+                    for (int j = 1; i - j >= 0 && bitset(next, i - j); j++) setbit(next, i - j);
                 }
                 if (next == 0) {
                     printf("%d\n", m[node] + 1);
@@ -61,5 +48,4 @@ int main() {
             }
         }
     }
-    return 1;
 }
