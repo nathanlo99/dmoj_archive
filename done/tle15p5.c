@@ -1,13 +1,12 @@
 #include "stdio.h"
 #define mod 1000000007
-//#define pow pow_
 
-long long N, A[2001], M, P[2001];
+long long n, a[2001], m, p[2001], c;
 
 long long pow(long long n, long long p) {
-    if (p == 0) return 1;
-    if (p & 1) return n * pow((n * n) % mod, p / 2) % mod;
-    return pow((n * n) % mod, p / 2) % mod;
+    if (!p) return 1;
+    else if (p & 1) return n * pow((n * n) % mod, p / 2) % mod;
+    else return pow((n * n) % mod, p / 2) % mod;
 }
 
 long long inverse(long long n) {
@@ -15,19 +14,18 @@ long long inverse(long long n) {
 }
 
 int main() {
-	scanf("%lld", &N);
-	for (int i = 0; i < N; i++) scanf("%lld", A + i);
-	scanf("%lld", &M);
+	scanf("%lld", &n);
+	for (int i = 0; i < n; i++) scanf("%lld", a + i);
+	scanf("%lld", &m);
 
-	P[0] = 1;
-	for (int i = 1; i < N; i++)
-	    P[i] = ((P[i - 1] * (M - 1 + i)) % mod * inverse(i)) % mod;
+	p[0] = 1;
+	for (int i = 1; i < n; i++)
+	    p[i] = ((p[i - 1] * (m - 1 + i)) % mod * inverse(i)) % mod;
 
-	for (int i = 0; i < N; i++) {
-		long long c = 0;
+	for (int i = 0; i < n; i++) {
+		c = 0;
 		for (int j = 0; j <= i; j++)
-		    c = (c + P[i - j] * A[j]) % mod;
+		    c = (c + p[i - j] * a[j]) % mod;
 		printf("%lld ", c);
 	}
-	printf("\n");
 }

@@ -13,15 +13,15 @@ int main() {
         }
     }
     
-    for (int c : costs[0]) {
+    for (const int c : costs[0]) {
         poss[0][c] = 1;
-        if (cost > ans) ans = c, cnt = 1;
+        if (c > ans) ans = c, cnt = 1;
     }
 
     bool flag = 1;
     for (int i = 1; flag && i < 2005; i++) {
         flag = 0;
-        for (int j : costs[i % 3]) {
+        for (const int j : costs[i % 3]) {
             for (int k = 0; k < 2005; k++) {
                 if (poss[i - 1][k] == 0) continue;
                 const int alt = k + j, count = poss[i - 1][k];

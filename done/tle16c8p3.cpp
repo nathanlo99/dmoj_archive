@@ -2,6 +2,9 @@
 #include <vector>
 #include <algorithm>
 
+#define scan(x) do{while((_n=getchar())<45);if(_n-45)x=_n;else x=getchar();for(x-=48;47<(_=getchar());x=(x<<3)+(x<<1)+_-48);if(_n<46)x=-x;}while(0)
+char _, _n;
+
 long long dp[128], t, n;
 std::vector<long long> psa;
 
@@ -17,14 +20,14 @@ int main() {
         psa.push_back(psa.back() + dp[i]);
     }
     
-    scanf("%lld", &t);
+    scan(t);
     while (t--) {
-        scanf("%lld", &n);
+        scan(n);
         int d = std::lower_bound(psa.begin(), psa.end(), n) - psa.begin();
         n -= psa[d - 1] + 1;
         while (d > 0) {
-            if (d == 2) { printf("69\n"); break; }
-            if (d == 3) { printf("420\n"); break; }
+            if (d == 2) { puts("69\n"); break; }
+            if (d == 3) { puts("420\n"); break; }
             if (n < dp[d - 3]) {
                 printf("420");
                 d -= 3;

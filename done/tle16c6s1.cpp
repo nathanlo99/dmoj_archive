@@ -1,30 +1,27 @@
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
-#include <map>
-#include <string>
-#include <vector>
-
+#include <unordered_map>
 
 int t, n;
 std::string s;
-std::map<std::string, int> order;
-std::vector<std::pair<int, int> > problems;
+std::unordered_map<std::string, int> order;
+std::pair<int, int> problems[100005];
 
 int main() {
-    scanf("%d ", &t);
+    std::cin.tie(0);
+    std::cin.sync_with_stdio(0);
+    std::cin >> t;
     for (int i = 0; i < t; i++) {
-        std::getline(std::cin, s);
+        std::cin >> s;
         order[s] = i;
     }
-    scanf("%d ", &n);
+    std::cin >> n;
     for (int i = 0; i < n; i++) {
-        std::getline(std::cin, s);
-        problems.push_back(std::make_pair(order[s], i));
+        std::cin >> s;
+        problems[i].first = order[s];
+        problems[i].second = i;
     }
-    std::sort(problems.begin(), problems.end());
-
-    for (auto p : problems) {
-        printf("%d\n", p.second + 1);
-    }
+    std::sort(problems, problems + n);
+    for (int i = 0; i < n; i++) printf("%d\n", problems[i].second + 1);
 }

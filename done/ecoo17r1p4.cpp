@@ -4,40 +4,21 @@
 #include <algorithm>
 #include <cstring>
 
-#define T 10
+#define min(a, b) ((a) < (b) ? (a) : (b))
 
-int n, idx[1005];
+int n;
 std::string s;
-std::vector<std::pair<std::string, int> > thing, thing2;
+std::vector<std::pair<std::string, int> > a, b;
 
 bool vis[1024];
 
-int dfs(int u) {
-    if (vis[u]) return 0;
-    vis[u] = 1;
-    return dfs(thing2[u].second) + 1;
-}
-
-int ans;
-
-int getans() {
-    int a = 0;
-    memset(vis, 0, sizeof(vis));
-    std::sort(thing2.begin(), thing2.end());
-    for (int i = 0; i < thing2.size(); i++) {
-        if (!vis[i]) a += dfs(i) - 1;
-    }
-    return a;
-}
-
 int main() {
     for (int z = 0; z < 10; z++) {
-        memset(idx, 0, 1005 * sizeof(int));
         std::cin >> n;
-        thing.clear();
+        a.clear();
         for (int j = 0; j < n; j++) {
             std::cin >> s;
-            thing.push_back(std::make_pair(s, j));
+            a.push_back(std::make_pair(s, j));
         }
         
         if (n == 1) {
@@ -47,13 +28,25 @@ int main() {
 
         int ans = 10000000;
         for (int j = 0; j < n; j++) {
-            thing2.clear();
+            b.clear();
+            memset(vis, 0, sizeof(vis));
             for (int k = 0; k < n; k++) {
-                if (k == j) continue;
-                if (k < j) thing2.push_back(std::make_pair(thing[k].first, thing[k].second));
-                else thing2.push_back(std::make_pair(thing[k].first, thing[k].second - 1));
+                if (k != j) b.push_back(std::make_pair(a[k].first, a[k].second - (k > j)));
             }
-            ans = std::min(getans(), ans);
+            std::sort(b.begin(), b.end());
+            
+            int t = n - 1;
+            for (int i = 0; i < b.size(); i++) {
+                if (!vis[i]) {
+                    int u = i;
+                    while (!vis[u]) {
+                        vis[u] = 1;
+                        u = b[u].second;
+                    }
+                    t--;
+                }
+            }
+            ans = min(t, ans);
         }
         printf("%d\n", ans);
     }

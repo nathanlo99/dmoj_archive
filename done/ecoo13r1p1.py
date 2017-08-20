@@ -1,8 +1,10 @@
 next_num = int(input())
 num_late = 0
 not_served = 0
-s = input()
+
+s = ""
 while s != "EOF":
+    s = input()
     if s == "TAKE":
         next_num += 1
         if next_num == 1000:
@@ -15,4 +17,3 @@ while s != "EOF":
         print("{} {} {}".format(num_late, not_served, next_num))
         num_late = 0
         not_served = 0
-    s = input()

@@ -1,7 +1,6 @@
 #include <cstdio>
 
-int n, m, a, b;
-int par[100005];
+int n, m, a, b, par[100005];
 char op;
 
 int parent(int n) {
@@ -15,12 +14,8 @@ int main() {
     for (int i = 0; i < m; i++) {
         op = getchar();
         scanf("%d %d ", &a, &b);
-        int pa = parent(a);
-        int pb = parent(b);
-        if (op == 'A') {
-            par[pa] = pb;
-        } else {
-            printf((pa == pb) ? "Y\n" : "N\n");
-        }
+        int pa = parent(a), pb = parent(b);
+        if (op == 'A') par[pa] = pb;
+        else printf((pa == pb) ? "Y\n" : "N\n");
     }
 }

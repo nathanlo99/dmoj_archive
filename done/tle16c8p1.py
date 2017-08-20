@@ -1,7 +1,1 @@
-s = set(input())
-for _ in range(int(input())):
-    a = set(input())
-    if a.issuperset(s):
-        print("yes")
-    else:
-        print("no")
+print((lambda s:"\n".join(("yes"if set(raw_input()).issuperset(s)else"no")for _ in range(int(raw_input()))))(set(raw_input())))

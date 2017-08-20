@@ -1,5 +1,1 @@
-for _ in range(int(input())):
-    a = int(input())
-    for c in bin(a)[2:]:
-        print("meme" if c == '0' else "dank", end=" ")
-    print()
+print("\n".join((" ".join("meme" if c=='0'else"dank"for c in bin(int(input()))[2:]))for _ in range(int(input()))))
