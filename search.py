@@ -9,7 +9,7 @@ def main():
     subs = session.get("https://dmoj.ca/api/user/submissions/" + username).json()
 
     ac_subs = set(data["problem"]
-                  for submission_num, data in subs.items() if data["result"] == "AC")
+                  for data in subs.values() if data["result"] == "AC")
 
     problem_list = session.get("https://dmoj.ca/api/problem/list").json()
     unsolved = []

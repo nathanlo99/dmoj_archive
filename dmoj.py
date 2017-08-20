@@ -82,6 +82,20 @@ def extract_src(session, file_name, submission_num):
     with open(file_name, "w") as f:
         f.write(response.text)
 
+def get_files(home):
+    # raw_name("source_file_name.extension") => "source_file_name"
+    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
+
+    files, raw_names = [], []
+    if os.path.isdir(home):
+        # FIXME Apparently crashes on Windows because of '.' and '..'
+        for f in os.listdir(home):
+            if os.path.isfile(os.path.join(home, f)):
+                files.append(f)
+                raw_names.append(raw_name(f))
+    else:
+        os.mkdir(home)
+    return files, raw_names
 
 def main():
 
@@ -90,32 +104,9 @@ def main():
     print("==========================================")
     print()
 
-    # raw_name("source_file_name.extension") => "source_file_name"
-    raw_name = lambda extended: ".".join(extended.split(".")[:-1])
-
     # Gets the raw file_names of all the files in 'done' and 'working' directories
-    if os.path.isdir("done"):
-        # FIXME Apparently crashes on Windows because of '.' and '..'
-        done_files = []
-        for f in os.listdir("done"):
-            if os.path.isfile(os.path.join("done", f)):
-                done_files.append(f)
-        done = [raw_name(f) for f in done_files]
-    else:
-        os.mkdir("done")
-        done_files = []
-        done = []
-    if os.path.isdir("working"):
-        # FIXME See above
-        working_files = []
-        for f in os.listdir("working"):
-            if os.path.isfile(os.path.join("working", f)):
-                working_files.append(f)
-        working = [raw_name(f) for f in working_files]
-    else:
-        os.mkdir("working")
-        working_files = []
-        working = []
+    done_files, done = get_files("done")
+    working_files, working = get_files("working")
 
     username, session = login()
 
@@ -124,8 +115,8 @@ def main():
     sub_info = {}
     submission_nums = {}
 
-    # Gets the fastest AC submission with the most points and notes the submission number and
-    # source language
+    # Gets the fastest AC submission with the most points and notes the
+    # submission number and source language
     for submission_num, data in subs.items():
         if data["result"] != "AC":
             continue
@@ -165,7 +156,6 @@ def main():
     for number, working_problem in enumerate(working):
         if working_problem in submission_nums:
             print("\t{}".format(working_problem))
-
             os.remove(os.path.join("working", working_files[number]))
             c += 1
     print(" -> {} files removed from 'working/'".format(c))

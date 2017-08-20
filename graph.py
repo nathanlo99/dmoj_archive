@@ -28,13 +28,11 @@ def main():
             points = data["points"]
             if points is None or points == 0:
                 continue
-            if problem_name not in best_submission:
+            if problem_name not in best_submission or points > best_submission[problem_name][1]:
                 best_submission[problem_name] = (num, points)
-            elif points > best_submission[problem_name][1]:
-                best_submission[problem_name] = (num, points)
+
         total_points = 0
-        data_x = []
-        data_y = []
+        data_x, data_y = [], []
         i = 1
         ppp_y = []
         for submission_number, points_earned in sorted(best_submission.values()):
@@ -54,7 +52,7 @@ def main():
 
     plt.xlabel("Submission number")
     plt.ylabel("Points")
-    plt.legend(loc=2)
+    plt.legend(loc = 2)
     print("Plotting...")
     plt.show()
     return 0

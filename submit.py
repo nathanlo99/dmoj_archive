@@ -17,12 +17,15 @@ def pretty_print_list(n):
     padding = 3
     num_entries_per_col = width // (max_length + padding) - 1
     col = 0
+
+    output = ""
     for entry in n:
-        print(("{:>" + str(max_length + padding) + "}").format(entry), end="")
+        output += ("{:>" + str(max_length + padding) + "}").format(entry)
         col += 1
         if col == num_entries_per_col:
             col = 0
-            print()
+            output += "\n"
+    print(output)
 
 
 def readable_memory(kbs):
@@ -35,9 +38,9 @@ def readable_memory(kbs):
     return "{:.4} KB".format(kbs)
 
 
-def getFile(session):
+def get_file(session):
     source_file = input("File: ").strip() if len(sys.argv) < 2 else sys.argv[1]
-    while not os.path.isfile(source_file):
+    if not os.path.isfile(source_file):
         print("File not found: {}".format(source_file))
         sys.exit(1)
 
@@ -59,7 +62,6 @@ def getFile(session):
         print()
         pretty_print_list(available_languages)
         print("\n")
-        # print("\n".join("\t{}".format(language) for language in available_languages))
         language = input("Language: ")
 
     print()
@@ -188,7 +190,7 @@ def submit(session, username, problem, source, language):
     submission = response_json[str(submission_num)]
 
     seconds = 0
-    while submission["status"] not in ["CE", "D", "AB"]:
+    while submission["status"] not in ("CE", "D", "AB"):
         print("\rGrading Status:", submission["status"])
         print("   ({} seconds)".format(seconds))
         time.sleep(1)
@@ -223,7 +225,7 @@ def results(session, submission_num):
 
 def main():
     username, session = dmoj.login()
-    source, language, problem = getFile(session)
+    source, language, problem = get_file(session)
     submission_num = submit(session, username, problem, source, language)
     results(session, submission_num)
     session.close()
