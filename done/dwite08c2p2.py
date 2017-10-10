@@ -1,0 +1,1 @@
+print("\n".join(max(input()) for _ in range(5)))
