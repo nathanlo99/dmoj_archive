@@ -1,0 +1,1 @@
+print("\n".join(("".join((str(input().count("#")) for __ in range(7))) for _ in range(5))))
