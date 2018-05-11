@@ -1,0 +1,1 @@
+print((lambda _, a, b: sum(1 for aa, bb in zip(a, b) if (aa == 'C' and bb == 'C')))(input(), input(), input()))
