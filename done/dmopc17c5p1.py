@@ -1,0 +1,1 @@
+print(input().replace('0', 'O').replace('1', 'l').replace('3', 'E').replace('4', 'A').replace('5', 'S').replace('6', 'G').replace('8', 'B').replace('9', 'g'))
