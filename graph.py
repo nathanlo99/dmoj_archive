@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 # graph.py will take an arbitrary number of command-line arguments, representing users,
 #   and plot their points over time in a pyplot graph.
