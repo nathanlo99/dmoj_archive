@@ -1,0 +1,1 @@
+print("Stay" if input() != input() else "Switch")
