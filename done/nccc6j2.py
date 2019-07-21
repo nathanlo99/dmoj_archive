@@ -1,0 +1,1 @@
+print(sum(1 for x, y in zip(list(input()), list("pusheen")) if x != y))
